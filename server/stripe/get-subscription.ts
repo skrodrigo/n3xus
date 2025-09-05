@@ -17,6 +17,11 @@ export async function getSubscription() {
       plan: true,
       referenceId: true,
       stripeSubscriptionId: true,
+      stripeCustomerId: true,
+      periodStart: true,
+      periodEnd: true,
+      cancelAtPeriodEnd: true,
+      seats: true,
     },
     where: {
       referenceId: data.user.id,

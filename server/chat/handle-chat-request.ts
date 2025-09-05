@@ -10,13 +10,16 @@ import { getUserUsage } from "@/server/user/get-usage";
 import { startOrContinueChat } from "@/server/chat/start-or-continue-chat";
 
 export async function handleChatRequest(req: Request) {
+
   const session = await getUserSession();
+
   if (!session.success || !session.data?.user?.id) {
     return new Response(JSON.stringify({ error: 'Unauthorized' }), {
       status: 401,
       headers: { 'Content-Type': 'application/json' },
     });
   }
+
   const userId = session.data.user.id;
 
   const body = await req.json();
@@ -33,6 +36,7 @@ export async function handleChatRequest(req: Request) {
   }
 
   const usageData = await getUserUsage(userId);
+
   if (!usageData || usageData.limitReached) {
     return new Response(JSON.stringify({ error: 'Message limit reached' }), {
       status: 403,
@@ -41,10 +45,7 @@ export async function handleChatRequest(req: Request) {
   }
 
   const lastMessage = messages[messages.length - 1];
-  const messageContent =
-    Array.isArray(lastMessage.parts)
-      ? lastMessage.parts.find((p: any) => p.type === 'text')?.text || ''
-      : lastMessage.content || '';
+  const messageContent = Array.isArray(lastMessage.parts) ? lastMessage.parts.find((p: any) => p.type === 'text')?.text || '' : lastMessage.content || '';
 
   const chatResult = await startOrContinueChat(
     chatIdFromClient || null,
@@ -61,6 +62,7 @@ export async function handleChatRequest(req: Request) {
   const chatId = chatResult.chatId;
 
   const fullChatResult = await getChat(chatId, userId);
+
   if (!fullChatResult.success || !fullChatResult.data) {
     return new Response(JSON.stringify({ error: fullChatResult.error || 'Chat not found after creation' }), {
       status: 500,

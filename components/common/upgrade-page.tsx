@@ -84,7 +84,7 @@ export function UpgradePage({ onClose }: UpgradePageProps) {
           <h1 className="text-4xl font-bold tracking-tight">Plano</h1>
           <p className="text-lg text-muted-foreground mt-2">Faça upgrade para desbloquear o uso de todos os modelos e mais funcionalidades.</p>
         </div>
-        <div className="grid grid-cols-1 gap-8">
+        <div className="grid grid-cols-1 gap-8 border p-1 rounded-xl">
           <div className="border border-border rounded-2xl p-8 flex flex-col relative bg-sidebar">
             <div className="absolute top-0 right-4 -mt-3">
               <div className="bg-primary/5 backdrop-blur-3xl border border-primary text-primary text-xs font-semibold px-3 py-1 rounded-full">POPULAR</div>

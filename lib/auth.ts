@@ -37,6 +37,20 @@ export const auth = betterAuth({
 						},
 					};
 				},
+				onSubscriptionDeleted: async ({ subscription }) => {
+					await prisma.$transaction(async (prisma) => {
+						await prisma.userUsage.deleteMany({
+							where: {
+								userId: subscription.referenceId,
+							},
+						});
+						await prisma.subscription.delete({
+							where: {
+								id: subscription.id,
+							},
+						});
+					});
+				},
 			},
 		}),
 	],

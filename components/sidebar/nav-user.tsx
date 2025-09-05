@@ -37,11 +37,14 @@ import {
   Settings,
 } from "lucide-react"
 import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
+import type { Subscription } from "@/app/generated/prisma"
 
 export function NavUser({
   user,
   planName,
   userId,
+  subscription,
 }: {
   user: {
     name: string
@@ -50,6 +53,7 @@ export function NavUser({
   }
   planName?: string | null
   userId?: string
+  subscription?: Subscription | null
 }) {
   const [usageData, setUsageData] = useState<{
     dayCount: number
@@ -63,6 +67,8 @@ export function NavUser({
     }
   } | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+
+  const router = useRouter()
 
   async function createPortalBilling() {
     const session = await authClient.getSession()
@@ -90,6 +96,11 @@ export function NavUser({
       cancelUrl: process.env.BETTER_AUTH_URL,
       disableRedirect: false,
     })
+  }
+
+  const logout = async () => {
+    await authClient.signOut()
+    router.push('/')
   }
 
   const { isMobile } = useSidebar()
@@ -160,7 +171,7 @@ export function NavUser({
                 Configurações
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="focus:bg-destructive/20">
+              <DropdownMenuItem className="focus:bg-destructive/20" onClick={logout}>
                 <LogOut />
                 Log out
               </DropdownMenuItem>
@@ -206,9 +217,7 @@ export function NavUser({
                         : "Sem plano"}
                     </div>
                   </div>
-                  {usageData &&
-                    usageData.limits &&
-                    usageData.limits.promptsDay > 0 ? (
+                  {subscription && subscription.status === "active" ? (
                     <Button
                       size="sm"
                       variant="outline"
@@ -251,7 +260,7 @@ export function NavUser({
                   </div>
                 </div>
               </div>
-            ) : usageData && usageData.limits && usageData.limits.promptsDay > 0 && (
+            ) : subscription && subscription.status === "active" && usageData && usageData.limits && usageData.limits.promptsDay > 0 && (
               <div className="border-t pt-4">
                 <h3 className="text-sm font-medium text-foreground/90">Uso do Plano</h3>
                 <div className="mt-2 space-y-2 text-sm">

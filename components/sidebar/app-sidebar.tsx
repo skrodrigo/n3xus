@@ -53,6 +53,7 @@ export default async function AppSidebar({ chats, ...props }: AppSidebarProps) {
             }}
             planName={planName}
             userId={userId}
+            subscription={subscription}
           />
         </SidebarFooter>
         <SidebarRail />

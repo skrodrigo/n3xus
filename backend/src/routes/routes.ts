@@ -1,0 +1,43 @@
+import { OpenAPIHono } from '@hono/zod-openapi';
+import { swaggerUI } from '@hono/swagger-ui';
+import type { PrismaClient, User } from './../generated/prisma/client.js';
+
+import authRouter from './auth.routes.js';
+import chatRouter from './chat.routes.js';
+import chatsRouter from './chats.routes.js';
+import usageRouter from './usage.routes.js';
+import subscriptionRouter from './subscription.routes.js';
+import publicRouter from './public.routes.js';
+import { cors } from './../common/cors.js';
+
+export type AppVariables = {
+  prisma: PrismaClient;
+  user: Omit<User, 'password'> | null;
+};
+
+const app = new OpenAPIHono<{ Variables: AppVariables }>();
+
+app.use('*', cors());
+
+app.get('/', (c) => c.json({ message: 'nexus API up and running!' }));
+
+app.route('/api/auth', authRouter);
+app.route('/api/chat', chatRouter);
+app.route('/api/chats', chatsRouter);
+app.route('/api/usage', usageRouter);
+app.route('/api/subscription', subscriptionRouter);
+app.route('/api/public', publicRouter);
+
+app.doc('/docs', {
+  openapi: '3.0.0',
+  info: {
+    version: '1.0.0',
+    title: 'nexus API',
+    description: 'API do nexus',
+  },
+  servers: [{ url: 'http://localhost:3001', description: 'Development' }],
+});
+
+app.get('/swagger', swaggerUI({ url: '/docs' }));
+
+export default app;

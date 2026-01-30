@@ -180,12 +180,12 @@ export const VoiceSelectorSeparator = (props: VoiceSelectorSeparatorProps) => (
 
 export type VoiceSelectorGenderProps = ComponentProps<"span"> & {
   value?:
-    | "male"
-    | "female"
-    | "transgender"
-    | "androgyne"
-    | "non-binary"
-    | "intersex";
+  | "male"
+  | "female"
+  | "transgender"
+  | "androgyne"
+  | "non-binary"
+  | "intersex";
 };
 
 export const VoiceSelectorGender = ({
@@ -228,37 +228,37 @@ export const VoiceSelectorGender = ({
 
 export type VoiceSelectorAccentProps = ComponentProps<"span"> & {
   value?:
-    | "american"
-    | "british"
-    | "australian"
-    | "canadian"
-    | "irish"
-    | "scottish"
-    | "indian"
-    | "south-african"
-    | "new-zealand"
-    | "spanish"
-    | "french"
-    | "german"
-    | "italian"
-    | "portuguese"
-    | "brazilian"
-    | "mexican"
-    | "argentinian"
-    | "japanese"
-    | "chinese"
-    | "korean"
-    | "russian"
-    | "arabic"
-    | "dutch"
-    | "swedish"
-    | "norwegian"
-    | "danish"
-    | "finnish"
-    | "polish"
-    | "turkish"
-    | "greek"
-    | string;
+  | "american"
+  | "british"
+  | "australian"
+  | "canadian"
+  | "irish"
+  | "scottish"
+  | "indian"
+  | "south-african"
+  | "new-zealand"
+  | "spanish"
+  | "french"
+  | "german"
+  | "italian"
+  | "portuguese"
+  | "brazilian"
+  | "mexican"
+  | "argentinian"
+  | "japanese"
+  | "chinese"
+  | "korean"
+  | "russian"
+  | "arabic"
+  | "dutch"
+  | "swedish"
+  | "norwegian"
+  | "danish"
+  | "finnish"
+  | "polish"
+  | "turkish"
+  | "greek"
+  | string;
 };
 
 export const VoiceSelectorAccent = ({
@@ -468,7 +468,7 @@ export const VoiceSelectorPreview = ({
       className={cn("size-6", className)}
       disabled={loading}
       onClick={handleClick}
-      size="icon-sm"
+      size="icon"
       type="button"
       variant="outline"
       {...props}

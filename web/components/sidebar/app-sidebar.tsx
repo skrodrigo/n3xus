@@ -39,7 +39,7 @@ export default function AppSidebar({ chats: initialChats, ...props }: AppSidebar
             <h1 className="font-medium">Nexus</h1>
           </div>
           <Link href="/chat" className="mt-6">
-            <Button size="icon" className="w-full font-medium bg-accent border hover:bg-accent/80 border-[#3f3f3f] text-foreground">Novo Chat</Button>
+            <Button size="icon" className="w-full font-medium bg-accent border hover:bg-accent/80 border-border text-foreground">Novo Chat</Button>
           </Link>
         </SidebarHeader >
         <SidebarContent>

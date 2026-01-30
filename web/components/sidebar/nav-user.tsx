@@ -72,11 +72,9 @@ export function NavUser({
 
   useEffect(() => {
     async function loadUsageData() {
-      const token = window.localStorage.getItem('token')
-      if (!token) return
       setIsLoading(true)
       try {
-        const data = await usageService.get(token)
+        const data = await usageService.get()
         if (data) {
           setUsageData(data)
         }

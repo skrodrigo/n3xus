@@ -1,9 +1,24 @@
 {
   "name": "hono",
   "type": "module",
+  "scripts": {
+    "dev": "tsx watch api/index.ts",
+    "build": "prisma generate && tsc",
+    "start": "node dist/api/index.js",
+    "start:dev": "NODE_ENV=development tsx api/index.ts",
+    "type-check": "tsc --noEmit",
+    "lint": "tsc --noEmit",
+    "db:migrate": "prisma migrate dev",
+    "db:migrate:prod": "prisma migrate deploy",
+    "db:generate": "prisma generate",
+    "db:studio": "prisma studio",
+    "db:push": "prisma db push",
+    "db:reset": "prisma migrate reset"
+  },
   "dependencies": {
     "@ai-sdk/google": "^3.0.18",
     "@ai-sdk/openai": "^3.0.23",
+    "@hono/node-server": "^1.19.9",
     "@hono/swagger-ui": "^0.5.3",
     "@hono/zod-openapi": "^1.2.0",
     "@openrouter/ai-sdk-provider": "^2.1.1",
@@ -13,6 +28,7 @@
     "date-fns": "^4.1.0",
     "dotenv": "^17.2.3",
     "hono": "^4.11.7",
+    "openid-client": "^6.8.1",
     "pg": "^8.17.2",
     "zod": "^4.3.6"
   },

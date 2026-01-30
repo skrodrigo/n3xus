@@ -1,4 +1,4 @@
-import { createApiClient } from './api';
+import { getApiBaseUrl } from './api';
 
 export type AuthTokenResponse = { token: string };
 
@@ -13,25 +13,39 @@ export type User = {
   stripeCustomerId?: string | null;
 };
 
-function getApiBaseUrl() {
-  const url = process.env.NEXT_PUBLIC_API_URL || process.env.API_URL;
-  if (!url) throw new Error('Missing NEXT_PUBLIC_API_URL (or API_URL)');
-  return url;
-}
 
 export const authService = {
   async register(data: { name: string; email: string; password: string }) {
-    const api = createApiClient({ baseUrl: getApiBaseUrl() });
-    return api.post<User>('/api/auth/register', data);
+    const res = await fetch(`${getApiBaseUrl()}/api/auth/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+      cache: 'no-store',
+    });
+    const body = await res.json().catch(() => null);
+    if (!res.ok) throw new Error(body?.error || `Request failed (${res.status})`);
+    return body as User;
   },
 
   async login(data: { email: string; password: string }) {
-    const api = createApiClient({ baseUrl: getApiBaseUrl() });
-    return api.post<AuthTokenResponse>('/api/auth/login', data);
+    const res = await fetch(`${getApiBaseUrl()}/api/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+      cache: 'no-store',
+    });
+    const body = await res.json().catch(() => null);
+    if (!res.ok) throw new Error(body?.error || `Request failed (${res.status})`);
+    return body as AuthTokenResponse;
   },
 
   async me(token: string) {
-    const api = createApiClient({ baseUrl: getApiBaseUrl(), token });
-    return api.get<User>('/api/auth/me');
+    const res = await fetch(`${getApiBaseUrl()}/api/auth/me`, {
+      headers: { Authorization: `Bearer ${token}` },
+      cache: 'no-store',
+    });
+    const body = await res.json().catch(() => null);
+    if (!res.ok) throw new Error(body?.error || `Request failed (${res.status})`);
+    return body as User;
   },
 };

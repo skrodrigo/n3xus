@@ -26,13 +26,7 @@ export function UpgradePage({ onClose }: UpgradePageProps) {
   useEffect(() => {
     async function checkSubscription() {
       try {
-        const token = window.localStorage.getItem('token');
-        if (!token) {
-          setIsSubscribed(false);
-          return;
-        }
-
-        const subscription = await subscriptionService.get(token);
+        const subscription = await subscriptionService.get();
         const isActive = subscription?.status === 'active' || subscription?.status === 'trialing';
         setIsSubscribed(isActive && subscription?.plan?.toLowerCase() === 'pro');
       } catch {

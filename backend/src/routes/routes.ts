@@ -1,6 +1,7 @@
 import { OpenAPIHono } from '@hono/zod-openapi';
 import { swaggerUI } from '@hono/swagger-ui';
 import type { PrismaClient, User } from './../generated/prisma/client.js';
+import { env } from './../common/env.js';
 
 import authRouter from './auth.routes.js';
 import chatRouter from './chat.routes.js';
@@ -17,7 +18,8 @@ export type AppVariables = {
 
 const app = new OpenAPIHono<{ Variables: AppVariables }>();
 
-app.use('*', cors());
+const corsOrigin = env.NODE_ENV === 'production' ? env.WEB_URL : 'http://localhost:3000';
+app.use('*', cors({ origin: corsOrigin }));
 
 app.get('/', (c) => c.json({ message: 'nexus API up and running!' }));
 

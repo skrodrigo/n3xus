@@ -4,12 +4,6 @@ type ChatStreamEvent =
   | { type: 'response.completed'; chatId: string }
   | { type: 'response.error'; error: string };
 
-function getApiBaseUrl() {
-  const url = process.env.NEXT_PUBLIC_API_URL || process.env.API_URL;
-  if (!url) throw new Error('Missing NEXT_PUBLIC_API_URL (or API_URL)');
-  return url;
-}
-
 function parseSseLines(buffer: string) {
   const parts = buffer.split('\n\n');
   const complete = parts.slice(0, -1);
@@ -29,15 +23,13 @@ function extractData(block: string) {
 
 export const chatService = {
   async streamChat(params: {
-    token: string;
     body: any;
     onEvent: (ev: ChatStreamEvent) => void;
   }) {
-    const res = await fetch(`${getApiBaseUrl()}/api/chat`, {
+    const res = await fetch('/api/chat', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${params.token}`,
       },
       body: JSON.stringify(params.body),
       cache: 'no-store',

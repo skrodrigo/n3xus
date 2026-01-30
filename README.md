@@ -1,6 +1,6 @@
 # N3xus
 
-![Dashboard Screenshot](./public/nexus.png)
+![Dashboard Screenshot](./web/public/nexus.png)
 
 > **N3xus** - An integrated chat platform with multiple AI models, where users can switch between models, create new chats, organize conversations, and compare responses.
 

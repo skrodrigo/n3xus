@@ -1,19 +1,19 @@
-import { createApiClient } from './api';
-
-function getApiBaseUrl() {
-  const url = process.env.NEXT_PUBLIC_API_URL || process.env.API_URL;
-  if (!url) throw new Error('Missing NEXT_PUBLIC_API_URL (or API_URL)');
-  return url;
-}
-
 export const subscriptionService = {
-  async get(token: string) {
-    const api = createApiClient({ baseUrl: getApiBaseUrl(), token });
-    return api.get<any>('/api/subscription');
+  async get() {
+    const res = await fetch('/api/subscription', { cache: 'no-store' });
+    if (!res.ok) {
+      const body = await res.json().catch(() => null);
+      throw new Error(body?.error || `Request failed (${res.status})`);
+    }
+    return res.json();
   },
 
-  async deleteIncomplete(token: string) {
-    const api = createApiClient({ baseUrl: getApiBaseUrl(), token });
-    return api.delete<any>('/api/subscription/incomplete');
+  async deleteIncomplete() {
+    const res = await fetch('/api/subscription', { method: 'DELETE', cache: 'no-store' });
+    if (!res.ok) {
+      const body = await res.json().catch(() => null);
+      throw new Error(body?.error || `Request failed (${res.status})`);
+    }
+    return res.json();
   },
 };

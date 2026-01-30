@@ -62,9 +62,7 @@ export function NavChatHistory({
     setShareDialogOpen(true);
     setIsLoading(true);
     startTransition(async () => {
-      const token = window.localStorage.getItem('token');
-      if (!token) return;
-      const result = await chatsService.share(token, chatId);
+      const result = await chatsService.share(chatId);
       const data = result?.data;
       if (result?.success && data?.sharePath) {
         const url = new URL(window.location.href);
@@ -82,9 +80,7 @@ export function NavChatHistory({
   const handleDelete = (chatId: string) => {
     setIsLoading(true);
     startTransition(async () => {
-      const token = window.localStorage.getItem('token');
-      if (!token) return;
-      const result = await chatsService.delete(token, chatId);
+      const result = await chatsService.delete(chatId);
       if (result?.success) {
         if (pathname === `/chat/${chatId}`) {
           router.push('/chat');

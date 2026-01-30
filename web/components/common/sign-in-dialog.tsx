@@ -10,7 +10,14 @@ interface SignInDialogProps {
 }
 
 const signInWithGoogle = async () => {
-  throw new Error('Google sign-in not implemented yet for Hono auth');
+  const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL;
+  if (!apiBaseUrl) {
+    throw new Error('Missing NEXT_PUBLIC_API_URL');
+  }
+
+  const returnTo = `${window.location.origin}/api/auth/google/callback`;
+  const redirectUrl = `${apiBaseUrl}/api/auth/google?returnTo=${encodeURIComponent(returnTo)}`;
+  window.location.href = redirectUrl;
 };
 
 export function SignInDialog({ open, onOpenChange }: SignInDialogProps) {

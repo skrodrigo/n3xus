@@ -1,12 +1,13 @@
 import { google } from '@ai-sdk/google';
 import { openai } from '@ai-sdk/openai';
 import { createOpenRouter } from '@openrouter/ai-sdk-provider';
+import type { LanguageModel } from 'ai';
 
 const openrouter = createOpenRouter({
   apiKey: process.env.OPENROUTER_API_KEY,
 });
 
-export function getModelProvider(modelValue: string) {
+export function getModelProvider(modelValue: string): LanguageModel {
   switch (modelValue) {
     case 'gemini/gemini-2.5-flash':
       return google('gemini-2.5-flash');

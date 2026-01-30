@@ -24,9 +24,7 @@ export default function AppSidebar({ chats: initialChats, ...props }: AppSidebar
   const [chats, setChats] = useState(initialChats);
 
   useEffect(() => {
-    const token = window.localStorage.getItem('token');
-    if (!token) return;
-    chatsService.list(token).then((res) => {
+    chatsService.list().then((res) => {
       const data = res?.data;
       if (Array.isArray(data)) setChats(data);
     }).catch(() => { });

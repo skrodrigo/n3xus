@@ -32,7 +32,6 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { ScrollArea } from '@/components/ui/scroll-area';
-// @ts-ignore
 import { useChat, UIMessage } from '@ai-sdk/react';
 import { subscriptionService } from '@/server/subscription';
 import { chatService } from '@/server/chat';
@@ -77,11 +76,6 @@ export function Chat({ chatId, initialMessages }: { chatId?: string; initialMess
   const selectedModel = models.find((m) => m.value === model);
   const [isPro, setIsPro] = useState<boolean | null>(null);
 
-  const getToken = () => {
-    if (typeof window === 'undefined') return null;
-    return window.localStorage.getItem('token');
-  };
-
   const { messages, status, regenerate, setMessages } = useChat({
     onError: (error: any) => {
       try {
@@ -100,13 +94,7 @@ export function Chat({ chatId, initialMessages }: { chatId?: string; initialMess
   useEffect(() => {
     const checkSubscription = async () => {
       try {
-        const token = getToken();
-        if (!token) {
-          setIsPro(false);
-          return;
-        }
-
-        const subscription = await subscriptionService.get(token);
+        const subscription = await subscriptionService.get();
         const isActive = subscription?.status === 'active' || subscription?.status === 'trialing';
         setIsPro(isActive && subscription?.plan?.toLowerCase() === 'pro');
       } catch (error) {
@@ -148,17 +136,11 @@ export function Chat({ chatId, initialMessages }: { chatId?: string; initialMess
     setIsStreaming(true);
 
     try {
-      const token = getToken();
-      if (!token) {
-        throw new Error('Unauthorized');
-      }
-
       let accumulatedText = '';
 
       let createdChatId: string | null = null;
 
       await chatService.streamChat({
-        token,
         body: {
           messages: updatedMessages,
           model,

@@ -27,7 +27,7 @@ function b64url(input: Buffer) {
   return input.toString('base64').replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
 }
 
-function signJwt(payload: object) {
+export function signJwt(payload: object) {
   const header = { alg: 'HS256', typ: 'JWT' };
   const headerPart = b64url(Buffer.from(JSON.stringify(header)));
   const payloadPart = b64url(Buffer.from(JSON.stringify(payload)));

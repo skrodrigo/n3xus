@@ -7,7 +7,6 @@ import { createRoute, OpenAPIHono } from '@hono/zod-openapi';
 import { env } from './../common/env.js';
 import { authGoogleService } from './../services/auth-google.service.js';
 import * as client from 'openid-client';
-import crypto from 'node:crypto';
 
 const authRouter = new OpenAPIHono<{ Variables: AppVariables }>();
 

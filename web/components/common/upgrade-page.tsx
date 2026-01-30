@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from 'react';
 import { subscriptionService } from '@/server/subscription';
+import { stripeService } from '@/server/stripe';
 import { ArrowLeft, BotMessageSquare, FileUp, Zap, Search, BrainCircuit, Loader2Icon } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -22,6 +23,7 @@ const proFeatures = [
 export function UpgradePage({ onClose }: UpgradePageProps) {
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
+  const [isOpeningPortal, setIsOpeningPortal] = useState(false);
 
   useEffect(() => {
     async function checkSubscription() {
@@ -39,11 +41,26 @@ export function UpgradePage({ onClose }: UpgradePageProps) {
   const createSubscription = async () => {
     setIsCreating(true);
     try {
-      toast.error('Checkout de assinatura ainda não implementado nesta versão.');
+      const body = await stripeService.createCheckout('pro_monthly');
+      if (!body?.url) throw new Error('Missing checkout url');
+      window.location.href = body.url;
     } catch (error) {
       toast.error('Falha ao criar assinatura. Por favor, tente novamente.');
     } finally {
       setIsCreating(false);
+    }
+  }
+
+  const openBillingPortal = async () => {
+    setIsOpeningPortal(true);
+    try {
+      const body = await stripeService.createPortal();
+      if (!body?.url) throw new Error('Missing portal url');
+      window.location.href = body.url;
+    } catch (error) {
+      toast.error('Falha ao abrir o portal de cobrança. Por favor, tente novamente.');
+    } finally {
+      setIsOpeningPortal(false);
     }
   }
 
@@ -76,6 +93,17 @@ export function UpgradePage({ onClose }: UpgradePageProps) {
             <Button className="mt-8 w-full" onClick={createSubscription} disabled={isSubscribed || isCreating}>
               {isCreating ? <Loader2Icon className="animate-spin size-4" /> : isSubscribed ? 'Seu plano atual' : 'Assinar Pro'}
             </Button>
+
+            {isSubscribed && (
+              <Button
+                className="mt-3 w-full"
+                variant="secondary"
+                onClick={openBillingPortal}
+                disabled={isOpeningPortal}
+              >
+                {isOpeningPortal ? <Loader2Icon className="animate-spin size-4" /> : 'Gerenciar assinatura'}
+              </Button>
+            )}
             <ul className="mt-8 space-y-4 text-sm">
               {proFeatures.map((feature, index) => (
                 <li key={index} className="flex items-center gap-3">

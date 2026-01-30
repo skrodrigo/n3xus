@@ -92,7 +92,13 @@ OPENROUTER_API_KEY="your-openrouter-key"
 STRIPE_SECRET_KEY="sk_..."
 STRIPE_PUBLISHABLE_KEY="pk_..."
 STRIPE_WEBHOOK_SECRET="whsec_..."
+STRIPE_PRICE_PRO_MONTHLY="price_..."
+STRIPE_PRICE_PRO_YEARLY="price_..."
 ```
+
+Stripe webhook endpoint (configure in Stripe Dashboard):
+
+`POST {API_URL}/api/webhooks/stripe`
 
 #### Web (`web/.env.local`)
 

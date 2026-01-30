@@ -8,6 +8,11 @@ const envVariablesSchema = z.object({
   API_URL: z.string().min(1),
   GOOGLE_CLIENT_ID: z.string().min(1),
   GOOGLE_CLIENT_SECRET: z.string().min(1),
+  STRIPE_SECRET_KEY: z.string().min(1),
+  STRIPE_WEBHOOK_SECRET: z.string().min(1),
+  STRIPE_PUBLISHABLE_KEY: z.string().min(1).optional(),
+  STRIPE_PRICE_PRO_MONTHLY: z.string().min(1),
+  STRIPE_PRICE_PRO_YEARLY: z.string().min(1).optional(),
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
   PORT: z.coerce.number(),
 });

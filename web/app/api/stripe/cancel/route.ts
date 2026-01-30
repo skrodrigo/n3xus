@@ -1,0 +1,17 @@
+import { getApiBaseUrl, proxyJson, requireAuthToken } from '@/server/bff';
+
+export async function POST() {
+  const auth = await requireAuthToken();
+  if (!auth.ok) return auth.res;
+
+  const upstream = await fetch(`${getApiBaseUrl()}/api/stripe/cancel`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${auth.token}`,
+      'Content-Type': 'application/json',
+    },
+    cache: 'no-store',
+  });
+
+  return proxyJson(upstream);
+}

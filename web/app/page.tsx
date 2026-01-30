@@ -6,8 +6,6 @@ import { SignInDialog } from '@/components/common/sign-in-dialog';
 import { Header } from '@/components/common/header';
 import { GlobeIcon } from 'lucide-react';
 import Image from 'next/image';
-import { authClient } from '@/lib/auth-client';
-import { redirect } from 'next/navigation';
 
 const models = [
   {
@@ -37,12 +35,6 @@ const models = [
     icon: <Image src="/models/deepseek.svg" alt="deepseek" width={24} height={24} priority quality={100} />,
   },
 ];
-
-const session = await authClient.getSession();
-
-if (session.data?.user) {
-  redirect('/chat');
-}
 
 export default function HomePage() {
   const [showSignIn, setShowSignIn] = useState(false);

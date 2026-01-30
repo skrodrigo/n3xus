@@ -3,7 +3,6 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
-import { authClient } from '@/lib/auth-client';
 
 interface SignInDialogProps {
   open: boolean;
@@ -11,10 +10,7 @@ interface SignInDialogProps {
 }
 
 const signInWithGoogle = async () => {
-  await authClient.signIn.social({
-    provider: "google",
-    callbackURL: "/chat",
-  });
+  throw new Error('Google sign-in not implemented yet for Hono auth');
 };
 
 export function SignInDialog({ open, onOpenChange }: SignInDialogProps) {

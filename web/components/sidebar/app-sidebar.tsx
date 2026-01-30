@@ -1,3 +1,5 @@
+"use client";
+
 import { NavUser } from "@/components/sidebar/nav-user";
 import {
   Sidebar,
@@ -6,27 +8,29 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import { getUserSession } from "@/server/user/get-session";
 import Image from "next/image";
 import { NavChatHistory } from "../chat/nav-chat-history";
 import { Button } from "../ui/button";
 import { SidebarSearch } from "./sidebar-search";
-
-import { Chat } from "@/app/generated/prisma";
-import { getSubscription } from "@/server/stripe/get-subscription";
 import Link from "next/link";
-import { Divide } from "lucide-react";
+import { useEffect, useState } from "react";
+import { chatsService } from "@/server/chats";
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
-  chats: Pick<Chat, 'id' | 'title'>[];
+  chats: { id: string; title: string }[];
 }
 
-export default async function AppSidebar({ chats, ...props }: AppSidebarProps) {
+export default function AppSidebar({ chats: initialChats, ...props }: AppSidebarProps) {
+  const [chats, setChats] = useState(initialChats);
 
-  const session = await getUserSession();
-  const userId = session.data?.user?.id;
-  const subscription = await getSubscription();
-  const planName = subscription?.plan ?? null;
+  useEffect(() => {
+    const token = window.localStorage.getItem('token');
+    if (!token) return;
+    chatsService.list(token).then((res) => {
+      const data = res?.data;
+      if (Array.isArray(data)) setChats(data);
+    }).catch(() => { });
+  }, []);
 
   return (
     <div className="border border-border rounded-2xl">
@@ -45,20 +49,10 @@ export default async function AppSidebar({ chats, ...props }: AppSidebarProps) {
           <NavChatHistory chats={chats} />
         </SidebarContent>
         <SidebarFooter>
-          <NavUser
-            user={{
-              name: session?.data?.user?.name as string,
-              email: session?.data?.user?.email as string,
-              avatar: session?.data?.user?.image as string,
-            }}
-            planName={planName}
-            userId={userId}
-            subscription={subscription}
-          />
+          <NavUser user={{ name: 'User', email: '', avatar: '' }} />
         </SidebarFooter>
         <SidebarRail />
       </Sidebar >
     </div>
   )
-
 }

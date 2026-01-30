@@ -34,7 +34,8 @@ import {
 import { ScrollArea } from '@/components/ui/scroll-area';
 // @ts-ignore
 import { useChat, UIMessage } from '@ai-sdk/react';
-import { getSubscription } from '@/server/stripe/get-subscription';
+import { subscriptionService } from '@/server/subscription';
+import { chatService } from '@/server/chat';
 
 const models = [
   {
@@ -76,10 +77,9 @@ export function Chat({ chatId, initialMessages }: { chatId?: string; initialMess
   const selectedModel = models.find((m) => m.value === model);
   const [isPro, setIsPro] = useState<boolean | null>(null);
 
-  const getCookie = (name: string): string | null => {
-    if (typeof document === 'undefined') return null;
-    const match = document.cookie.match(new RegExp('(^|; )' + name + '=([^;]*)'));
-    return match ? decodeURIComponent(match[2]) : null;
+  const getToken = () => {
+    if (typeof window === 'undefined') return null;
+    return window.localStorage.getItem('token');
   };
 
   const { messages, status, regenerate, setMessages } = useChat({
@@ -100,7 +100,13 @@ export function Chat({ chatId, initialMessages }: { chatId?: string; initialMess
   useEffect(() => {
     const checkSubscription = async () => {
       try {
-        const subscription = await getSubscription();
+        const token = getToken();
+        if (!token) {
+          setIsPro(false);
+          return;
+        }
+
+        const subscription = await subscriptionService.get(token);
         const isActive = subscription?.status === 'active' || subscription?.status === 'trialing';
         setIsPro(isActive && subscription?.plan?.toLowerCase() === 'pro');
       } catch (error) {
@@ -142,52 +148,56 @@ export function Chat({ chatId, initialMessages }: { chatId?: string; initialMess
     setIsStreaming(true);
 
     try {
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+      const token = getToken();
+      if (!token) {
+        throw new Error('Unauthorized');
+      }
+
+      let accumulatedText = '';
+
+      let createdChatId: string | null = null;
+
+      await chatService.streamChat({
+        token,
+        body: {
           messages: updatedMessages,
           model,
           webSearch,
           chatId,
-        }),
+        },
+        onEvent: (ev) => {
+          if (ev.type === 'chat.created') {
+            createdChatId = ev.chatId;
+          }
+
+          if (ev.type === 'response.output_text.delta') {
+            accumulatedText += ev.delta;
+            setMessages((prev: UIMessage[]) =>
+              prev.map((msg: UIMessage) =>
+                msg.id === assistantMessage.id
+                  ? { ...msg, parts: [{ type: 'text', text: accumulatedText }] }
+                  : msg
+              )
+            );
+          }
+
+          if (ev.type === 'response.error') {
+            throw new Error(ev.error);
+          }
+        },
       });
-
-      if (!response.ok) throw new Error('Failed to fetch');
-
-      const reader = response.body?.getReader();
-      if (!reader) throw new Error('No reader available');
-
-      let accumulatedText = '';
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-
-        const chunk = new TextDecoder().decode(value);
-        accumulatedText += chunk;
-
-        setMessages((prev) =>
-          prev.map((msg) =>
-            msg.id === assistantMessage.id
-              ? { ...msg, parts: [{ type: 'text', text: accumulatedText }] }
-              : msg
-          )
-        );
-      }
 
       setIsStreaming(false);
 
       if (!chatId) {
-        const newId = getCookie('chatId');
-        if (newId) {
-          router.push(`/chat/${newId}`);
+        if (createdChatId) {
+          router.push(`/chat/${createdChatId}`);
           router.refresh();
         }
       }
     } catch (error) {
       setIsStreaming(false);
-      setMessages((prev) => prev.slice(0, -1));
+      setMessages((prev: UIMessage[]) => prev.slice(0, -1));
     }
   };
 
@@ -203,8 +213,8 @@ export function Chat({ chatId, initialMessages }: { chatId?: string; initialMess
                 <ConversationContent>
                   {messages.map((message: UIMessage, messageIndex: number) => {
                     const assistantMessageText = message.parts
-                      ?.filter(part => part.type === 'text')
-                      .map(part => (part as { text: string }).text)
+                      ?.filter((part: any) => part.type === 'text')
+                      .map((part: any) => (part as { text: string }).text)
                       .join('') || '';
                     const isEmptyAssistantMessage =
                       message.role === 'assistant' &&

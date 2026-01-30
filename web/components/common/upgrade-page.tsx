@@ -2,9 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from 'react';
-import { authClient } from "@/lib/auth-client";
-import { getSubscription } from '@/server/stripe/get-subscription';
-import { deleteIncompleteSubscription } from '@/server/stripe/delete-incomplete-subscription';
+import { subscriptionService } from '@/server/subscription';
 import { ArrowLeft, BotMessageSquare, FileUp, Zap, Search, BrainCircuit, Loader2Icon } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -27,9 +25,19 @@ export function UpgradePage({ onClose }: UpgradePageProps) {
 
   useEffect(() => {
     async function checkSubscription() {
-      const subscription = await getSubscription();
-      const isActive = subscription?.status === 'active' || subscription?.status === 'trialing';
-      setIsSubscribed(isActive && subscription?.plan?.toLowerCase() === 'pro');
+      try {
+        const token = window.localStorage.getItem('token');
+        if (!token) {
+          setIsSubscribed(false);
+          return;
+        }
+
+        const subscription = await subscriptionService.get(token);
+        const isActive = subscription?.status === 'active' || subscription?.status === 'trialing';
+        setIsSubscribed(isActive && subscription?.plan?.toLowerCase() === 'pro');
+      } catch {
+        setIsSubscribed(false);
+      }
     }
     checkSubscription();
   }, []);
@@ -37,31 +45,7 @@ export function UpgradePage({ onClose }: UpgradePageProps) {
   const createSubscription = async () => {
     setIsCreating(true);
     try {
-      const session = await authClient.getSession();
-      const userId = session.data?.user.id;
-      const subscription = await getSubscription();
-
-      if (userId) {
-        const result = await deleteIncompleteSubscription(userId);
-
-        if (result) {
-          toast.error(result.error);
-          return;
-        }
-      }
-
-      await authClient.subscription.upgrade({
-        plan: "Pro",
-        annual: false,
-        referenceId: userId,
-        subscriptionId: subscription?.stripeSubscriptionId ?? undefined,
-        seats: 1,
-        successUrl: process.env.BETTER_AUTH_URL,
-        cancelUrl: process.env.BETTER_AUTH_URL,
-        returnUrl: process.env.BETTER_AUTH_URL,
-        disableRedirect: false,
-      });
-
+      toast.error('Checkout de assinatura ainda não implementado nesta versão.');
     } catch (error) {
       toast.error('Falha ao criar assinatura. Por favor, tente novamente.');
     } finally {

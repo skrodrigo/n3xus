@@ -18,8 +18,7 @@ import {
   MoreHorizontal,
   Trash2,
 } from "lucide-react"
-import { deleteChat } from '@/server/chat/delete-chat';
-import { shareChat } from '@/server/chat/share-chat';
+import { chatsService } from '@/server/chats';
 
 import {
   DropdownMenu,
@@ -63,8 +62,11 @@ export function NavChatHistory({
     setShareDialogOpen(true);
     setIsLoading(true);
     startTransition(async () => {
-      const { success, data } = await shareChat(chatId);
-      if (success && data?.sharePath) {
+      const token = window.localStorage.getItem('token');
+      if (!token) return;
+      const result = await chatsService.share(token, chatId);
+      const data = result?.data;
+      if (result?.success && data?.sharePath) {
         const url = new URL(window.location.href);
         url.pathname = `/share/${data.sharePath}`;
         setShareLink(url.toString());
@@ -80,8 +82,10 @@ export function NavChatHistory({
   const handleDelete = (chatId: string) => {
     setIsLoading(true);
     startTransition(async () => {
-      const { success } = await deleteChat(chatId);
-      if (success) {
+      const token = window.localStorage.getItem('token');
+      if (!token) return;
+      const result = await chatsService.delete(token, chatId);
+      if (result?.success) {
         if (pathname === `/chat/${chatId}`) {
           router.push('/chat');
         }

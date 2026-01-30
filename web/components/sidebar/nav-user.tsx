@@ -27,10 +27,9 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
-import { authClient } from "@/lib/auth-client"
-import { getSubscription } from '@/server/stripe/get-subscription'
 import { Skeleton } from "@/components/ui/skeleton"
-import { getUserUsage } from "@/server/user/get-usage"
+import { usageService } from "@/server/usage"
+import { subscriptionService } from "@/server/subscription"
 import {
   ChevronsUpDown,
   LogOut,
@@ -38,22 +37,15 @@ import {
 } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import type { Subscription } from "@/app/generated/prisma"
 
 export function NavUser({
   user,
-  planName,
-  userId,
-  subscription,
 }: {
   user: {
     name: string
     email: string
     avatar: string
   }
-  planName?: string | null
-  userId?: string
-  subscription?: Subscription | null
 }) {
   const [usageData, setUsageData] = useState<{
     dayCount: number
@@ -70,36 +62,8 @@ export function NavUser({
 
   const router = useRouter()
 
-  async function createPortalBilling() {
-    const session = await authClient.getSession()
-
-    await authClient.subscription.billingPortal({
-      referenceId: session.data?.user.id,
-      returnUrl: process.env.BETTER_AUTH_URL,
-    });
-
-  }
-
-  const createSubscription = async () => {
-    const session = await authClient.getSession();
-
-    const userId = session.data?.user.id;
-
-    const subscription = await getSubscription();
-
-    await authClient.subscription.upgrade({
-      plan: "Pro",
-      annual: false,
-      referenceId: userId,
-      subscriptionId: subscription?.stripeSubscriptionId ?? undefined,
-      successUrl: process.env.BETTER_AUTH_URL,
-      cancelUrl: process.env.BETTER_AUTH_URL,
-      disableRedirect: false,
-    })
-  }
-
   const logout = async () => {
-    await authClient.signOut()
+    window.localStorage.removeItem('token')
     router.push('/')
   }
 
@@ -108,10 +72,11 @@ export function NavUser({
 
   useEffect(() => {
     async function loadUsageData() {
-      if (!userId) return
+      const token = window.localStorage.getItem('token')
+      if (!token) return
       setIsLoading(true)
       try {
-        const data = await getUserUsage(userId)
+        const data = await usageService.get(token)
         if (data) {
           setUsageData(data)
         }
@@ -124,7 +89,7 @@ export function NavUser({
     if (settingsOpen) {
       loadUsageData()
     }
-  }, [settingsOpen, userId])
+  }, [settingsOpen])
 
   return (
     <>
@@ -212,28 +177,12 @@ export function NavUser({
                 <div className="mt-2 flex items-center justify-between text-sm">
                   <div>
                     <div className="text-foreground/60">
-                      {planName
-                        ? planName.charAt(0).toUpperCase() + planName.slice(1)
-                        : "Sem plano"}
+                      Sem plano
                     </div>
                   </div>
-                  {subscription && subscription.status === "active" ? (
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={createPortalBilling}
-                    >
-                      Gerenciar
-                    </Button>
-                  ) : (
-                    <Button
-                      size="sm"
-                      variant="default"
-                      onClick={createSubscription}
-                    >
-                      Assine agora
-                    </Button>
-                  )}
+                  <Button size="sm" variant="default" disabled>
+                    Assine agora
+                  </Button>
                 </div>
               )}
             </div>
@@ -260,7 +209,7 @@ export function NavUser({
                   </div>
                 </div>
               </div>
-            ) : subscription && subscription.status === "active" && usageData && usageData.limits && usageData.limits.promptsDay > 0 && (
+            ) : usageData && usageData.limits && usageData.limits.promptsDay > 0 && (
               <div className="border-t pt-4">
                 <h3 className="text-sm font-medium text-foreground/90">Uso do Plano</h3>
                 <div className="mt-2 space-y-2 text-sm">

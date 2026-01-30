@@ -14,26 +14,6 @@ import type { ChatStatus } from 'ai';
 import React, { ComponentProps, KeyboardEventHandler, useState, useEffect, Children, HTMLAttributes } from 'react';
 import * as SelectPrimitive from '@radix-ui/react-select';
 import { Loader2Icon, ArrowUpIcon, SquareIcon, XIcon } from 'lucide-react';
-import { authClient } from '@/lib/auth-client';
-import { getSubscription } from '@/server/stripe/get-subscription';
-
-const createSubscription = async () => {
-  const session = await authClient.getSession();
-
-  const userId = session.data?.user.id;
-
-  const subscription = await getSubscription();
-
-  await authClient.subscription.upgrade({
-    plan: "Pro",
-    annual: false,
-    referenceId: userId,
-    subscriptionId: subscription?.stripeSubscriptionId ?? undefined,
-    successUrl: process.env.BETTER_AUTH_URL,
-    cancelUrl: process.env.BETTER_AUTH_URL,
-    disableRedirect: false,
-  })
-}
 
 export type PromptInputProps = HTMLAttributes<HTMLFormElement>;
 
@@ -217,21 +197,10 @@ export const PromptInputModelSelectContent = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Content>,
   PromptInputModelSelectContentProps
 >(({ className, children, showSubscription = true, ...props }, ref) => {
-  const [subscription, setSubscription] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const fetchSubscription = async () => {
-      try {
-        const sub = await getSubscription();
-        setSubscription(sub);
-      } catch (error) { }
-      finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchSubscription();
+    setIsLoading(false);
   }, []);
 
   return (

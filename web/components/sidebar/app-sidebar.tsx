@@ -14,7 +14,9 @@ import { Button } from "../ui/button";
 import { SidebarSearch } from "./sidebar-search";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { chatsService } from "@/server/chats";
+import { meService, type MeUser } from "@/server/me";
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
   chats: { id: string; title: string }[];
@@ -22,12 +24,31 @@ interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
 
 export default function AppSidebar({ chats: initialChats, ...props }: AppSidebarProps) {
   const [chats, setChats] = useState(initialChats);
+  const [user, setUser] = useState<{ name: string; email: string; avatar: string } | null>(null);
+  const pathname = usePathname();
 
   useEffect(() => {
-    chatsService.list().then((res) => {
-      const data = res?.data;
-      if (Array.isArray(data)) setChats(data);
-    }).catch(() => { });
+    const refresh = () => {
+      chatsService.list().then((res) => {
+        const data = res?.data;
+        if (Array.isArray(data)) setChats(data);
+      }).catch(() => { });
+    };
+    refresh();
+    window.addEventListener('chats:refresh', refresh);
+    return () => window.removeEventListener('chats:refresh', refresh);
+  }, [pathname]);
+
+  useEffect(() => {
+    meService.get().then((u: MeUser) => {
+      setUser({
+        name: u.name || 'User',
+        email: u.email || '',
+        avatar: u.image || '',
+      });
+    }).catch(() => {
+      setUser({ name: 'User', email: '', avatar: '' });
+    });
   }, []);
 
   return (
@@ -44,10 +65,10 @@ export default function AppSidebar({ chats: initialChats, ...props }: AppSidebar
         </SidebarHeader >
         <SidebarContent>
           <SidebarSearch chats={chats} />
-          <NavChatHistory chats={chats} />
+          <NavChatHistory chats={chats} onChatsChange={setChats} />
         </SidebarContent>
         <SidebarFooter>
-          <NavUser user={{ name: 'User', email: '', avatar: '' }} />
+          <NavUser user={user ?? { name: 'User', email: '', avatar: '' }} />
         </SidebarFooter>
         <SidebarRail />
       </Sidebar >

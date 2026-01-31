@@ -9,12 +9,10 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { authOtpService, authPasswordService } from '@/server/auth-otp';
-import { Separator } from '@/components/ui/separator';
 
-interface SignInDialogProps {
+interface SignUpDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSignUpClick?: () => void;
 }
 
 const signInWithGoogle = async () => {
@@ -28,12 +26,15 @@ const signInWithGoogle = async () => {
   window.location.href = redirectUrl;
 };
 
-export function SignInDialog({ open, onOpenChange, onSignUpClick }: SignInDialogProps) {
+export function SignUpDialog({ open, onOpenChange }: SignUpDialogProps) {
   const router = useRouter();
   const [step, setStep] = useState<'credentials' | 'otp'>('credentials');
+
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [otp, setOtp] = useState('');
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [lastOtpAttempt, setLastOtpAttempt] = useState<string | null>(null);
 
@@ -42,6 +43,7 @@ export function SignInDialog({ open, onOpenChange, onSignUpClick }: SignInDialog
   useEffect(() => {
     if (!open) {
       setStep('credentials');
+      setName('');
       setEmail('');
       setPassword('');
       setOtp('');
@@ -51,11 +53,8 @@ export function SignInDialog({ open, onOpenChange, onSignUpClick }: SignInDialog
   }, [open]);
 
   useEffect(() => {
-    // if user changes code, allow a new auto-attempt
     const value = otp.replace(/\D/g, '');
-    if (value.length !== 6) {
-      setLastOtpAttempt(null);
-    }
+    if (value.length !== 6) setLastOtpAttempt(null);
   }, [otp]);
 
   async function finalizeLogin(token: string) {
@@ -65,26 +64,28 @@ export function SignInDialog({ open, onOpenChange, onSignUpClick }: SignInDialog
     router.refresh();
   }
 
-  async function handlePasswordLogin() {
-    if (!email || !password) {
-      toast.error('Informe email e senha.');
+  async function handleRegister() {
+    if (!name || !email || !password) {
+      toast.error('Informe nome, email e senha.');
       return;
     }
 
     setIsSubmitting(true);
     try {
-      const res = await authPasswordService.login({ email, password });
+      const res = await authPasswordService.register({ name, email, password });
 
       if (res?.otpRequired) {
-        await authOtpService.request(email);
         setStep('otp');
+        toast.success('Enviamos um código para seu email.');
         return;
       }
 
-      if (!res?.token) throw new Error('missing_token');
-      await finalizeLogin(res.token);
-    } catch (e) {
-      toast.error('Falha ao fazer login.');
+      // Safe fallback
+      await authOtpService.request(email);
+      setStep('otp');
+      toast.success('Enviamos um código para seu email.');
+    } catch {
+      toast.error('Falha ao criar conta.');
     } finally {
       setIsSubmitting(false);
     }
@@ -97,10 +98,7 @@ export function SignInDialog({ open, onOpenChange, onSignUpClick }: SignInDialog
       return;
     }
 
-    // Prevent auto-submit loops: do not retry the same code automatically.
-    if (lastOtpAttempt === value) {
-      return;
-    }
+    if (lastOtpAttempt === value) return;
     setLastOtpAttempt(value);
 
     setIsSubmitting(true);
@@ -108,7 +106,7 @@ export function SignInDialog({ open, onOpenChange, onSignUpClick }: SignInDialog
       const { token } = await authOtpService.verify({ email, code: value });
       if (!token) throw new Error('missing_token');
       await finalizeLogin(token);
-    } catch (e) {
+    } catch {
       toast.error('Código inválido ou expirado.');
     } finally {
       setIsSubmitting(false);
@@ -119,8 +117,10 @@ export function SignInDialog({ open, onOpenChange, onSignUpClick }: SignInDialog
     if (step !== 'otp') return;
     if (!otpReady) return;
     if (isSubmitting) return;
+
     const value = otp.replace(/\D/g, '');
     if (lastOtpAttempt === value) return;
+
     void handleVerifyOtp();
   }, [otpReady, isSubmitting, step, otp, lastOtpAttempt]);
 
@@ -131,11 +131,42 @@ export function SignInDialog({ open, onOpenChange, onSignUpClick }: SignInDialog
         <DialogHeader className="flex flex-col items-center text-center">
           <Image src="/logos/nexus.svg" alt="Logo" width={32} height={32} className="mb-4" priority quality={100} />
           <DialogDescription>
-            {step === 'otp' ? 'Digite o código enviado para seu email.' : 'Faça login para começar a conversar.'}
+            {step === 'otp' ? 'Digite o código enviado para seu email.' : 'Crie sua conta para começar a conversar.'}
           </DialogDescription>
         </DialogHeader>
+
         {step === 'credentials' ? (
           <div className="space-y-3 p-4">
+            <Button
+              className="w-full bg-white border hover:bg-accent/80 border-border text-black"
+              onClick={signInWithGoogle}
+              disabled={isSubmitting}
+            >
+              <Image alt="Google" className="mr-2" height={16} src="/logos/google.svg" width={16} />
+              Continuar com Google
+            </Button>
+            <Button
+              variant="secondary"
+              className="w-full bg-black hover:bg-black/80 border text-white"
+              onClick={signInWithGoogle}
+              disabled={isSubmitting}
+            >
+              <Image alt="apple" className="mr-2" height={16} src="/logos/apple.svg" width={16} />
+              Continuar com Apple
+            </Button>
+            <div className="flex items-center gap-3 py-1">
+              <div className="h-px flex-1 bg-border" />
+              <span className="text-xs text-muted-foreground">or</span>
+              <div className="h-px flex-1 bg-border" />
+            </div>
+            <Input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Nome"
+              type="text"
+              autoComplete="name"
+              disabled={isSubmitting}
+            />
             <Input
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -149,79 +180,18 @@ export function SignInDialog({ open, onOpenChange, onSignUpClick }: SignInDialog
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Senha"
               type="password"
-              autoComplete="current-password"
+              autoComplete="new-password"
               disabled={isSubmitting}
             />
-            <Button variant='secondary' className="w-full" onClick={handlePasswordLogin} disabled={isSubmitting}>
-              Entrar
-            </Button>
-
-            {onSignUpClick && (
-              <Button
-                className="w-full text-muted-foreground"
-                variant="link"
-                onClick={() => {
-                  onOpenChange(false);
-                  onSignUpClick();
-                }}
-                disabled={isSubmitting}
-              >
-                Criar conta
-              </Button>
-            )}
-            <Separator />
-            <Button
-              className="w-full bg-white border hover:bg-accent/80 border-border text-black"
-              onClick={signInWithGoogle}
-              disabled={isSubmitting}
-            >
-              <Image
-                alt="Google"
-                className="mr-2"
-                height={16}
-                src="/logos/google.svg"
-                width={16}
-              />
-              Login com Google
-            </Button>
-            <Button
-              variant='secondary'
-              className="w-full bg-black hover:bg-black/80 border text-white"
-              onClick={signInWithGoogle}
-              disabled={isSubmitting}
-            >
-              <Image
-                alt="apple"
-                className="mr-2"
-                height={16}
-                src="/logos/apple.svg"
-                width={16}
-              />
-              Login com Apple
+            <Button variant="secondary" className="w-full" onClick={handleRegister} disabled={isSubmitting}>
+              Criar conta
             </Button>
           </div>
         ) : (
           <div className="p-6">
-            <div className="flex flex-col items-center text-center">
-              <div className="mb-4">
-                <Image src="/logos/nexus.svg" alt="Logo" width={40} height={40} priority quality={100} />
-              </div>
-              <h2 className="text-2xl font-semibold">Confirm your code</h2>
-              <p className="mt-2 text-sm text-muted-foreground">
-                Digite o código de 6 dígitos que enviamos para seu email.
-              </p>
-            </div>
-
-            <div className="mt-6 space-y-5">
-              <InputOTP
-                maxLength={6}
-                value={otp}
-                onChange={setOtp}
-                disabled={isSubmitting}
-                containerClassName="justify-center"
-                className=""
-              >
-                <InputOTPGroup className="justify-center">
+            <div className="space-y-5">
+              <InputOTP maxLength={6} value={otp} onChange={setOtp} disabled={isSubmitting} containerClassName="justify-center">
+                <InputOTPGroup className="justify-center mb-4">
                   <InputOTPSlot index={0} />
                   <InputOTPSlot index={1} />
                   <InputOTPSlot index={2} />
@@ -234,6 +204,7 @@ export function SignInDialog({ open, onOpenChange, onSignUpClick }: SignInDialog
               <Button className="w-full rounded-full py-6 text-base" onClick={() => handleVerifyOtp()} disabled={isSubmitting || !otpReady}>
                 Confirmar
               </Button>
+
               <Button
                 className="w-full"
                 variant="secondary"
@@ -252,6 +223,7 @@ export function SignInDialog({ open, onOpenChange, onSignUpClick }: SignInDialog
               >
                 Reenviar código
               </Button>
+
               <Button
                 className="w-full"
                 variant="ghost"

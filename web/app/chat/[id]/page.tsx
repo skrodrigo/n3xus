@@ -1,9 +1,49 @@
 import { Chat } from './chat';
+import { getApiBaseUrl, requireAuthToken } from '@/server/bff';
+import type { UIMessage } from '@ai-sdk/react';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
+function toUiMessages(messages: any[]): UIMessage[] {
+  if (!Array.isArray(messages)) return [];
+  return messages
+    .map((message) => {
+      const content = message?.content;
+      const text = typeof content === 'string'
+        ? content
+        : typeof content?.text === 'string'
+          ? content.text
+          : typeof content?.content === 'string'
+            ? content.content
+            : null;
+
+      if (!text || (message.role !== 'user' && message.role !== 'assistant')) return null;
+      return {
+        id: message.id,
+        role: message.role,
+        parts: [{ type: 'text', text }],
+      } as UIMessage;
+    })
+    .filter(Boolean) as UIMessage[];
+}
+
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  return <Chat key={id} chatId={id} initialMessages={[] as any[]} />;
+  let initialMessages: UIMessage[] = [];
+
+  const auth = await requireAuthToken();
+  if (auth.ok) {
+    const upstream = await fetch(`${getApiBaseUrl()}/api/chats/${id}`, {
+      headers: { Authorization: `Bearer ${auth.token}` },
+      cache: 'no-store',
+    });
+    const payload = await upstream.json().catch(() => null);
+    const chat = payload?.data ?? null;
+    if (chat?.messages) {
+      initialMessages = toUiMessages(chat.messages);
+    }
+  }
+
+  return <Chat key={id} chatId={id} initialMessages={initialMessages} />;
 }

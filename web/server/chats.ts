@@ -19,6 +19,9 @@ export const chatsService = {
 
   async delete(id: string) {
     const res = await fetch(`/api/chats/${id}`, { method: 'DELETE', cache: 'no-store' });
+    if (res.status === 404) {
+      return { success: true };
+    }
     if (!res.ok) {
       const body = await res.json().catch(() => null);
       throw new Error(body?.error || `Request failed (${res.status})`);

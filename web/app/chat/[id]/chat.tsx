@@ -88,7 +88,9 @@ export function Chat({ chatId, initialMessages }: { chatId?: string; initialMess
   });
 
   useEffect(() => {
-    setMessages(initialMessages);
+    if (initialMessages.length) {
+      setMessages(initialMessages);
+    }
   }, [initialMessages, setMessages]);
 
   useEffect(() => {
@@ -96,7 +98,7 @@ export function Chat({ chatId, initialMessages }: { chatId?: string; initialMess
       try {
         const subscription = await subscriptionService.get();
         const isActive = subscription?.status === 'active' || subscription?.status === 'trialing';
-        setIsPro(isActive && subscription?.plan?.toLowerCase() === 'pro');
+        setIsPro(Boolean(isActive));
       } catch (error) {
         setIsPro(false);
       }
@@ -150,6 +152,9 @@ export function Chat({ chatId, initialMessages }: { chatId?: string; initialMess
         onEvent: (ev) => {
           if (ev.type === 'chat.created') {
             createdChatId = ev.chatId;
+            if (typeof window !== 'undefined') {
+              window.dispatchEvent(new Event('chats:refresh'));
+            }
           }
 
           if (ev.type === 'response.output_text.delta') {
@@ -174,7 +179,6 @@ export function Chat({ chatId, initialMessages }: { chatId?: string; initialMess
       if (!chatId) {
         if (createdChatId) {
           router.push(`/chat/${createdChatId}`);
-          router.refresh();
         }
       }
     } catch (error) {

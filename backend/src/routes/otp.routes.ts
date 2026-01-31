@@ -94,6 +94,10 @@ otpRouter.openapi(verifyOtpRoute, async (c) => {
 
   await prisma.user.update({ where: { id: user.id }, data: { emailVerified: true } });
 
+  if (!user.emailVerified) {
+    await emailService.sendWelcome({ to: user.email, name: user.name });
+  }
+
   const token = signJwt({ userId: user.id, iat: Math.floor(Date.now() / 1000) });
   return c.json({ token }, 200);
 });

@@ -30,6 +30,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton"
 import { usageService } from "@/server/usage"
 import { subscriptionService } from "@/server/subscription"
+import { stripeService } from "@/server/stripe"
 import {
   ChevronsUpDown,
   LogOut,
@@ -47,6 +48,7 @@ export function NavUser({
     avatar: string
   }
 }) {
+  const [subscription, setSubscription] = useState<any | null>(null)
   const [usageData, setUsageData] = useState<{
     dayCount: number
     weekCount: number
@@ -59,21 +61,54 @@ export function NavUser({
     }
   } | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [isSubscribing, setIsSubscribing] = useState(false)
+  const [isManaging, setIsManaging] = useState(false)
 
   const router = useRouter()
 
   const logout = async () => {
-    window.localStorage.removeItem('token')
     router.push('/')
   }
+
+  const subscribe = async () => {
+    setIsSubscribing(true)
+    try {
+      const session = await stripeService.createCheckout('pro_monthly')
+      window.location.href = session.url
+    } catch (err) {
+      console.error(err)
+      setIsSubscribing(false)
+    }
+  }
+
+  const managePlan = async () => {
+    setIsManaging(true)
+    try {
+      const session = await stripeService.createPortal()
+      window.location.href = session.url
+    } catch (err) {
+      console.error(err)
+      setIsManaging(false)
+    }
+  }
+
+  const initials = (user.name || 'U')
+    .split(' ')
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((p) => p[0]?.toUpperCase())
+    .join('')
 
   const { isMobile } = useSidebar()
   const [settingsOpen, setSettingsOpen] = useState(false)
 
   useEffect(() => {
-    async function loadUsageData() {
+    async function loadSettingsData() {
       setIsLoading(true)
       try {
+        const sub = await subscriptionService.get()
+        setSubscription(sub)
+
         const data = await usageService.get()
         if (data) {
           setUsageData(data)
@@ -85,9 +120,23 @@ export function NavUser({
     }
 
     if (settingsOpen) {
-      loadUsageData()
+      loadSettingsData()
     }
   }, [settingsOpen])
+
+  const hasActiveSubscription =
+    subscription?.status === 'active' ||
+    subscription?.status === 'trialing'
+
+  const shouldShowUsage =
+    hasActiveSubscription &&
+    Boolean(usageData) &&
+    typeof usageData?.limits?.promptsDay === 'number' &&
+    typeof usageData?.limits?.promptsWeek === 'number' &&
+    typeof usageData?.limits?.promptsMonth === 'number' &&
+    typeof usageData?.dayCount === 'number' &&
+    typeof usageData?.weekCount === 'number' &&
+    typeof usageData?.monthCount === 'number'
 
   return (
     <>
@@ -101,7 +150,7 @@ export function NavUser({
               >
                 <Avatar className="h-8 w-8 rounded-2xl">
                   <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback className="rounded-2xl">CN</AvatarFallback>
+                  <AvatarFallback className="rounded-2xl">{initials}</AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-medium text-foreground/80">{user.name}</span>
@@ -120,7 +169,7 @@ export function NavUser({
                 <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                   <Avatar className="h-8 w-8 rounded-2xl">
                     <AvatarImage src={user.avatar} alt={user.name} />
-                    <AvatarFallback className="rounded-2xl">CN</AvatarFallback>
+                    <AvatarFallback className="rounded-2xl">{initials}</AvatarFallback>
                   </Avatar>
                   <div className="grid flex-1 text-left text-sm leading-tight">
                     <span className="truncate font-medium text-foreground/80">{user.name}</span>
@@ -155,7 +204,7 @@ export function NavUser({
               <div className="mt-2 flex items-center gap-3">
                 <Avatar className="h-9 w-9 rounded-2xl">
                   <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback className="rounded-2xl">CN</AvatarFallback>
+                  <AvatarFallback className="rounded-2xl">{initials}</AvatarFallback>
                 </Avatar>
                 <div className="text-sm">
                   <div className="font-medium">{user.name}</div>
@@ -175,17 +224,23 @@ export function NavUser({
                 <div className="mt-2 flex items-center justify-between text-sm">
                   <div>
                     <div className="text-foreground/60">
-                      Sem plano
+                      {hasActiveSubscription ? 'Ativo' : 'Sem plano'}
                     </div>
                   </div>
-                  <Button size="sm" variant="default" disabled>
-                    Assine agora
-                  </Button>
+                  {hasActiveSubscription ? (
+                    <Button size="sm" variant="secondary" onClick={managePlan} disabled={isManaging}>
+                      {isManaging ? 'Abrindo…' : 'Gerenciar plano'}
+                    </Button>
+                  ) : (
+                    <Button size="sm" variant="default" onClick={subscribe} disabled={isSubscribing}>
+                      {isSubscribing ? 'Redirecionando…' : 'Assine agora'}
+                    </Button>
+                  )}
                 </div>
               )}
             </div>
 
-            {isLoading ? (
+            {hasActiveSubscription && isLoading ? (
               <div className="border-t pt-4">
                 <h3 className="text-sm font-medium text-foreground/90">Uso do Plano</h3>
                 <div className="mt-2 space-y-2">
@@ -207,7 +262,7 @@ export function NavUser({
                   </div>
                 </div>
               </div>
-            ) : usageData && usageData.limits && usageData.limits.promptsDay > 0 && (
+            ) : shouldShowUsage && (
               <div className="border-t pt-4">
                 <h3 className="text-sm font-medium text-foreground/90">Uso do Plano</h3>
                 <div className="mt-2 space-y-2 text-sm">

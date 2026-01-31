@@ -3,9 +3,11 @@
 import { useState } from 'react';
 import { PromptInput, PromptInputTextarea, PromptInputSubmit, PromptInputModelSelectItem, PromptInputModelSelect, PromptInputModelSelectTrigger, PromptInputModelSelectContent, PromptInputTools, PromptInputToolbar, PromptInputButton } from '@/components/ai-elements/prompt-input';
 import { SignInDialog } from '@/components/common/sign-in-dialog';
+import { SignUpDialog } from '@/components/common/sign-up-dialog';
 import { Header } from '@/components/common/header';
 import { GlobeIcon } from 'lucide-react';
 import Image from 'next/image';
+import { Button } from '@/components/ui/button';
 
 const models = [
   {
@@ -38,6 +40,7 @@ const models = [
 
 export default function HomePage() {
   const [showSignIn, setShowSignIn] = useState(false);
+  const [showSignUp, setShowSignUp] = useState(false);
   const [input, setInput] = useState('');
   const [model, setModel] = useState<string>(models[0].value);
   const [webSearch, setWebSearch] = useState(false);
@@ -51,10 +54,11 @@ export default function HomePage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
-      <Header onSignInClick={() => setShowSignIn(true)} />
+      <Header onSignInClick={() => setShowSignIn(true)} onSignUpClick={() => setShowSignUp(true)} />
       <main className="flex flex-col items-center justify-center flex-grow">
         <div className="w-full max-w-3xl px-4 flex flex-col items-center space-y-4">
           <h1 className="text-2xl font-light">Posso te ajudar?</h1>
+
           <div className="p-1 border border-border bg-muted/20 backdrop-blur-xl rounded-2xl w-full max-w-3xl mx-auto">
             <PromptInput onSubmit={handleSubmit}>
               <PromptInputTextarea
@@ -112,7 +116,15 @@ export default function HomePage() {
           </div>
         </div>
       </main>
-      <SignInDialog open={showSignIn} onOpenChange={setShowSignIn} />
+      <SignInDialog
+        open={showSignIn}
+        onOpenChange={setShowSignIn}
+        onSignUpClick={() => setShowSignUp(true)}
+      />
+      <SignUpDialog
+        open={showSignUp}
+        onOpenChange={setShowSignUp}
+      />
     </div>
   );
 }

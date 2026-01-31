@@ -27,6 +27,19 @@ export const authOtpService = {
 };
 
 export const authPasswordService = {
+  async register(params: { name: string; email: string; password: string }) {
+    const res = await fetch('/api/auth/password/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(params),
+      cache: 'no-store',
+    });
+
+    const body = await res.json().catch(() => null);
+    if (!res.ok) throw new Error(body?.error || `Request failed (${res.status})`);
+    return body as { otpRequired?: boolean };
+  },
+
   async login(params: { email: string; password: string }) {
     const res = await fetch('/api/auth/password/login', {
       method: 'POST',

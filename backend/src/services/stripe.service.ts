@@ -100,15 +100,52 @@ export const stripeService = {
   },
 
   async upsertSubscriptionFromStripe(sub: Stripe.Subscription) {
-    const userId =
-      typeof sub.metadata?.userId === 'string' && sub.metadata.userId
-        ? sub.metadata.userId
-        : null;
-
-    if (!userId) return;
-
     const customerId = typeof sub.customer === 'string' ? sub.customer : sub.customer?.id;
+
+    let userId: string | null =
+      typeof sub.metadata?.userId === 'string' && sub.metadata.userId ? sub.metadata.userId : null;
+
+    if (!userId && customerId) {
+      try {
+        const customer = await stripe.customers.retrieve(customerId);
+        if (customer && !('deleted' in customer)) {
+          const fromCustomer = customer.metadata?.userId;
+          if (typeof fromCustomer === 'string' && fromCustomer) {
+            userId = fromCustomer;
+          }
+
+          if (userId) {
+            await prisma.user.updateMany({
+              where: { id: userId, stripeCustomerId: null },
+              data: { stripeCustomerId: customerId },
+            });
+          }
+        }
+      } catch (err) {
+        console.error('[stripe] Failed to retrieve customer for subscription upsert', {
+          customerId,
+          subId: sub.id,
+          err,
+        });
+      }
+    }
+
+    if (!userId) {
+      console.warn('[stripe] Missing userId; skipping subscription upsert', {
+        subId: sub.id,
+        customerId,
+        subMetadata: sub.metadata,
+      });
+      return;
+    }
+
     const item = sub.items.data?.[0];
+    const priceId =
+      typeof item?.price === 'string'
+        ? item.price
+        : typeof item?.price?.id === 'string'
+          ? item.price.id
+          : null;
 
     await prisma.subscription.upsert({
       where: { id: sub.id },
@@ -120,7 +157,7 @@ export const stripeService = {
         cancelAtPeriodEnd: sub.cancel_at_period_end,
         periodStart: typeof item?.current_period_start === 'number' ? new Date(item.current_period_start * 1000) : null,
         periodEnd: typeof item?.current_period_end === 'number' ? new Date(item.current_period_end * 1000) : null,
-        plan: item?.price?.id ?? 'unknown',
+        plan: priceId ?? 'unknown',
       },
       create: {
         id: sub.id,
@@ -131,7 +168,7 @@ export const stripeService = {
         cancelAtPeriodEnd: sub.cancel_at_period_end,
         periodStart: typeof item?.current_period_start === 'number' ? new Date(item.current_period_start * 1000) : null,
         periodEnd: typeof item?.current_period_end === 'number' ? new Date(item.current_period_end * 1000) : null,
-        plan: item?.price?.id ?? 'unknown',
+        plan: priceId ?? 'unknown',
       },
     });
   },

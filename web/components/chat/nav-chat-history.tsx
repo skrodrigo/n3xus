@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
+import Link from 'next/link';
 import {
   Dialog,
   DialogContent,
@@ -40,11 +41,13 @@ import {
 
 export function NavChatHistory({
   chats,
+  onChatsChange,
 }: {
   chats: {
     id: string;
     title: string;
   }[]
+  onChatsChange?: (chats: { id: string; title: string }[]) => void;
 }) {
   const { isMobile } = useSidebar();
   const [isPending, startTransition] = useTransition();
@@ -80,12 +83,20 @@ export function NavChatHistory({
   const handleDelete = (chatId: string) => {
     setIsLoading(true);
     startTransition(async () => {
+      onChatsChange?.(chats.filter((c) => c.id !== chatId));
       const result = await chatsService.delete(chatId);
       if (result?.success) {
         if (pathname === `/chat/${chatId}`) {
           router.push('/chat');
         }
-        router.refresh();
+        startTransition(async () => {
+          try {
+            const res = await chatsService.list();
+            const data = res?.data;
+            if (Array.isArray(data)) onChatsChange?.(data);
+          } catch {
+          }
+        });
       }
       setIsLoading(false);
     });
@@ -99,9 +110,9 @@ export function NavChatHistory({
           {chats.map((chat) => (
             <SidebarMenuItem key={chat.id}>
               <SidebarMenuButton asChild>
-                <a href={`/chat/${chat.id}`}>
+                <Link href={`/chat/${chat.id}`}>
                   <span>{chat.title}</span>
-                </a>
+                </Link>
               </SidebarMenuButton>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>

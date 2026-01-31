@@ -15,16 +15,36 @@ webhookRouter.post('/stripe', async (c) => {
   let event: Stripe.Event;
   try {
     event = stripe.webhooks.constructEvent(rawBody, sig, env.STRIPE_WEBHOOK_SECRET);
-  } catch {
+  } catch (err) {
+    console.error('[stripe-webhook] Invalid signature', { err });
     return c.text('Invalid signature', 400);
   }
+
+  console.log('[stripe-webhook] Received event', {
+    id: event.id,
+    type: event.type,
+  });
 
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object as Stripe.Checkout.Session;
     const subId = typeof session.subscription === 'string' ? session.subscription : session.subscription?.id;
     if (subId) {
-      const sub = await stripe.subscriptions.retrieve(subId, { expand: ['items.data.price'] });
-      await stripeService.upsertSubscriptionFromStripe(sub);
+      try {
+        const sub = await stripe.subscriptions.retrieve(subId, { expand: ['customer', 'items.data.price'] });
+        await stripeService.upsertSubscriptionFromStripe(sub);
+      } catch (err) {
+        console.error('[stripe-webhook] Failed processing checkout.session.completed', {
+          eventId: event.id,
+          subId,
+          err,
+        });
+        return c.json({ received: true, ok: false }, 200);
+      }
+    } else {
+      console.warn('[stripe-webhook] checkout.session.completed without subscription id', {
+        eventId: event.id,
+        sessionId: session.id,
+      });
     }
   }
 
@@ -33,8 +53,24 @@ webhookRouter.post('/stripe', async (c) => {
     event.type === 'customer.subscription.updated' ||
     event.type === 'customer.subscription.deleted'
   ) {
-    const sub = event.data.object as Stripe.Subscription;
-    await stripeService.upsertSubscriptionFromStripe(sub);
+    const subEvent = event.data.object as Stripe.Subscription;
+    const subId = typeof subEvent.id === 'string' ? subEvent.id : null;
+    if (subId) {
+      try {
+        const sub = await stripe.subscriptions.retrieve(subId, {
+          expand: ['customer', 'items.data.price'],
+        });
+        await stripeService.upsertSubscriptionFromStripe(sub);
+      } catch (err) {
+        console.error('[stripe-webhook] Failed processing customer.subscription.*', {
+          eventId: event.id,
+          type: event.type,
+          subId,
+          err,
+        });
+        return c.json({ received: true, ok: false }, 200);
+      }
+    }
   }
 
   return c.json({ received: true }, 200);

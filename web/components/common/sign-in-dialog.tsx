@@ -10,6 +10,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { authOtpService, authPasswordService } from '@/server/auth-otp';
 import { Separator } from '@/components/ui/separator';
+import { toApiErrorPayload } from '@/server/api-error';
 
 interface SignInDialogProps {
   open: boolean;
@@ -62,7 +63,6 @@ export function SignInDialog({ open, onOpenChange, onSignUpClick }: SignInDialog
     await authPasswordService.storeToken(token);
     onOpenChange(false);
     router.push('/chat');
-    router.refresh();
   }
 
   async function handlePasswordLogin() {
@@ -84,7 +84,7 @@ export function SignInDialog({ open, onOpenChange, onSignUpClick }: SignInDialog
       if (!res?.token) throw new Error('missing_token');
       await finalizeLogin(res.token);
     } catch (e) {
-      toast.error('Falha ao fazer login.');
+      toast.error(toApiErrorPayload(e).error);
     } finally {
       setIsSubmitting(false);
     }
@@ -109,7 +109,7 @@ export function SignInDialog({ open, onOpenChange, onSignUpClick }: SignInDialog
       if (!token) throw new Error('missing_token');
       await finalizeLogin(token);
     } catch (e) {
-      toast.error('Código inválido ou expirado.');
+      toast.error(toApiErrorPayload(e).error);
     } finally {
       setIsSubmitting(false);
     }

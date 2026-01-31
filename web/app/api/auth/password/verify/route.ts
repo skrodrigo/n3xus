@@ -9,7 +9,7 @@ export async function POST(req: Request) {
   const token = body?.token;
 
   if (!token) {
-    return NextResponse.json({ error: 'missing_token' }, { status: 400 });
+    return NextResponse.json({ error: 'missing_token', statusCode: 400 }, { status: 400 });
   }
 
   const res = NextResponse.json({ success: true }, { status: 200 });

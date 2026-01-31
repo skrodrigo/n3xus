@@ -7,6 +7,7 @@ import { getModelProvider } from './model-provider.service.js';
 import { chatRepository } from './../repositories/chat.repository.js';
 import { messageRepository } from './../repositories/message.repository.js';
 import { getUserUsage, incrementUserUsage } from './usage.service.js';
+import crypto from 'node:crypto';
 
 function extractLastUserMessageText(messages: any[]) {
   if (!Array.isArray(messages) || messages.length === 0) return '';
@@ -18,22 +19,25 @@ function extractLastUserMessageText(messages: any[]) {
   return typeof last?.content === 'string' ? last.content : '';
 }
 
-function toHistoryUiMessages(dbMessages: Array<{ id: string; role: string; content: any }>) {
-  return dbMessages
+function toHistoryFromClient(rawMessages: any[]) {
+  if (!Array.isArray(rawMessages)) return [];
+  return rawMessages
     .map((m) => {
-      const text = typeof m.content === 'string'
-        ? m.content
-        : typeof m.content?.text === 'string'
-          ? m.content.text
-          : typeof m.content?.content === 'string'
-            ? m.content.content
-            : null;
+      const role = m?.role;
+      if (role !== 'user' && role !== 'assistant') return null;
+
+      let text: string | null = null;
+      if (Array.isArray(m?.parts)) {
+        const p = m.parts.find((x: any) => x?.type === 'text');
+        if (typeof p?.text === 'string') text = p.text;
+      } else if (typeof m?.content === 'string') {
+        text = m.content;
+      }
 
       if (!text) return null;
-
       return {
-        id: m.id,
-        role: m.role as 'user' | 'assistant',
+        id: typeof m?.id === 'string' ? m.id : crypto.randomUUID(),
+        role,
         parts: [{ type: 'text' as const, text }],
       };
     })
@@ -71,7 +75,7 @@ export async function handleChatSse(c: Context) {
   }
 
   if (chatId) {
-    const existing = await chatRepository.findByIdForUser(chatId, user.id);
+    const existing = await chatRepository.findMetaForUser(chatId, user.id);
     if (!existing) {
       chatId = null;
     }
@@ -85,12 +89,7 @@ export async function handleChatSse(c: Context) {
   await messageRepository.create(chatId, 'user', { type: 'text', text: userText });
   await incrementUserUsage(user.id);
 
-  const fullChat = await chatRepository.findByIdForUser(chatId, user.id);
-  if (!fullChat) {
-    throw new HTTPException(500, { message: 'Chat not found after creation' });
-  }
-
-  const history = toHistoryUiMessages(fullChat.messages as any);
+  const history = toHistoryFromClient(rawMessages);
   const selectedModel = getModelProvider(model || 'gemini/gemini-2.5-flash');
   let assistantText = '';
 

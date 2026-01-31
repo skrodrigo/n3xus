@@ -76,7 +76,7 @@ chatsRouter.openapi(shareRoute, async (c) => {
   const user = c.get('user');
   const { id } = c.req.param();
 
-  const chat = await chatRepository.findByIdForUser(id, user!.id);
+  const chat = await chatRepository.findShareInfoForUser(id, user!.id);
   if (!chat) throw new HTTPException(404, { message: 'Chat not found' });
 
   const sharePath = chat.sharePath ?? crypto.randomBytes(6).toString('hex');

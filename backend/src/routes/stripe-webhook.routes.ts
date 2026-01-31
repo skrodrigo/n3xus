@@ -28,10 +28,16 @@ webhookRouter.post('/stripe', async (c) => {
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object as Stripe.Checkout.Session;
     const subId = typeof session.subscription === 'string' ? session.subscription : session.subscription?.id;
+    const subObj = typeof session.subscription === 'string' ? null : session.subscription;
+    const hasExpandedCustomer = !!subObj && typeof subObj.customer !== 'string' && !!subObj.customer;
     if (subId) {
       try {
-        const sub = await stripe.subscriptions.retrieve(subId, { expand: ['customer', 'items.data.price'] });
-        await stripeService.upsertSubscriptionFromStripe(sub);
+        if (hasExpandedCustomer) {
+          await stripeService.upsertSubscriptionFromStripe(subObj as any);
+        } else {
+          const sub = await stripe.subscriptions.retrieve(subId, { expand: ['customer', 'items.data.price'] });
+          await stripeService.upsertSubscriptionFromStripe(sub);
+        }
       } catch (err) {
         console.error('[stripe-webhook] Failed processing checkout.session.completed', {
           eventId: event.id,
@@ -57,10 +63,15 @@ webhookRouter.post('/stripe', async (c) => {
     const subId = typeof subEvent.id === 'string' ? subEvent.id : null;
     if (subId) {
       try {
-        const sub = await stripe.subscriptions.retrieve(subId, {
-          expand: ['customer', 'items.data.price'],
-        });
-        await stripeService.upsertSubscriptionFromStripe(sub);
+        const hasExpandedCustomer = typeof subEvent.customer !== 'string' && !!subEvent.customer;
+        if (hasExpandedCustomer) {
+          await stripeService.upsertSubscriptionFromStripe(subEvent);
+        } else {
+          const sub = await stripe.subscriptions.retrieve(subId, {
+            expand: ['customer', 'items.data.price'],
+          });
+          await stripeService.upsertSubscriptionFromStripe(sub);
+        }
       } catch (err) {
         console.error('[stripe-webhook] Failed processing customer.subscription.*', {
           eventId: event.id,

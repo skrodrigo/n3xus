@@ -20,7 +20,15 @@ function getPriceIdForPlan(plan: StripePlan) {
 
 export const stripeService = {
   async getOrCreateCustomerForUser(userId: string) {
-    const user = await prisma.user.findUnique({ where: { id: userId } });
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        stripeCustomerId: true,
+      },
+    });
     if (!user) throw new Error('User not found');
 
     if (user.stripeCustomerId) return { customerId: user.stripeCustomerId };
@@ -78,6 +86,7 @@ export const stripeService = {
   async cancelSubscription(params: { userId: string }) {
     const sub = await prisma.subscription.findFirst({
       where: { referenceId: params.userId, status: 'active' },
+      select: { stripeSubscriptionId: true },
     });
 
     if (!sub?.stripeSubscriptionId) return { success: true };

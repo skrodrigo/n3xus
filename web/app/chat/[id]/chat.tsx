@@ -35,6 +35,8 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { useChat, UIMessage } from '@ai-sdk/react';
 import { subscriptionService } from '@/server/subscription';
 import { chatService } from '@/server/chat';
+import { toast } from 'sonner';
+import { toApiErrorPayload } from '@/server/api-error';
 
 const models = [
   {
@@ -184,6 +186,7 @@ export function Chat({ chatId, initialMessages }: { chatId?: string; initialMess
     } catch (error) {
       setIsStreaming(false);
       setMessages((prev: UIMessage[]) => prev.slice(0, -1));
+      toast.error(toApiErrorPayload(error).error);
     }
   };
 

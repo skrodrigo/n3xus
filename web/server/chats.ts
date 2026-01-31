@@ -3,7 +3,8 @@ export const chatsService = {
     const res = await fetch('/api/chats', { cache: 'no-store' });
     if (!res.ok) {
       const body = await res.json().catch(() => null);
-      throw new Error(body?.error || `Request failed (${res.status})`);
+      const code = body?.statusCode ?? res.status;
+      throw new Error(JSON.stringify({ statusCode: code, error: body?.error || `Request failed (${code})` }));
     }
     return res.json();
   },
@@ -12,7 +13,8 @@ export const chatsService = {
     const res = await fetch(`/api/chats/${id}`, { cache: 'no-store' });
     if (!res.ok) {
       const body = await res.json().catch(() => null);
-      throw new Error(body?.error || `Request failed (${res.status})`);
+      const code = body?.statusCode ?? res.status;
+      throw new Error(JSON.stringify({ statusCode: code, error: body?.error || `Request failed (${code})` }));
     }
     return res.json();
   },
@@ -24,7 +26,8 @@ export const chatsService = {
     }
     if (!res.ok) {
       const body = await res.json().catch(() => null);
-      throw new Error(body?.error || `Request failed (${res.status})`);
+      const code = body?.statusCode ?? res.status;
+      throw new Error(JSON.stringify({ statusCode: code, error: body?.error || `Request failed (${code})` }));
     }
     return res.json();
   },
@@ -33,7 +36,8 @@ export const chatsService = {
     const res = await fetch(`/api/chats/${id}/share`, { method: 'POST', cache: 'no-store' });
     if (!res.ok) {
       const body = await res.json().catch(() => null);
-      throw new Error(body?.error || `Request failed (${res.status})`);
+      const code = body?.statusCode ?? res.status;
+      throw new Error(JSON.stringify({ statusCode: code, error: body?.error || `Request failed (${code})` }));
     }
     return res.json();
   },

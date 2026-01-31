@@ -8,7 +8,6 @@ import { env } from './../common/env.js';
 import { authGoogleService } from './../services/auth-google.service.js';
 import { otpService } from './../services/otp.service.js';
 import { emailService } from './../services/email.service.js';
-import { prisma } from './../common/prisma.js';
 import * as client from 'openid-client';
 import crypto from 'node:crypto';
 
@@ -218,12 +217,11 @@ authRouter.openapi(registerRoute, async (c) => {
 
 authRouter.openapi(loginRoute, async (c) => {
   const data = c.req.valid('json');
-  const { token } = await authService.login(data);
+  const { token, email, emailVerified } = await authService.login(data);
 
-  const user = await prisma.user.findUnique({ where: { email: data.email } });
-  if (user && !user.emailVerified) {
-    const { code } = await otpService.issue(user.email);
-    await emailService.sendOtp({ to: user.email, code });
+  if (!emailVerified) {
+    const { code } = await otpService.issue(email);
+    await emailService.sendOtp({ to: email, code });
     return c.json({ otpRequired: true }, 200);
   }
 

@@ -41,7 +41,8 @@ export const chatService = {
         err = await res.json();
       } catch {
       }
-      throw new Error(err?.error || `Chat request failed (${res.status})`);
+      const code = err?.statusCode ?? res.status;
+      throw new Error(JSON.stringify({ statusCode: code, error: err?.error || `Chat request failed (${code})` }));
     }
 
     const reader = res.body?.getReader();

@@ -20,7 +20,7 @@ export async function POST(req: Request) {
   const url = new URL(req.url);
   const action = url.searchParams.get('action');
   if (action !== 'increment') {
-    return NextResponse.json({ error: 'Unsupported action' }, { status: 400 });
+    return NextResponse.json({ error: 'Unsupported action', statusCode: 400 }, { status: 400 });
   }
 
   const upstream = await fetch(`${getApiBaseUrl()}/api/usage/increment`, {

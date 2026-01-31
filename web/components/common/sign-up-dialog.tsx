@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { authOtpService, authPasswordService } from '@/server/auth-otp';
+import { toApiErrorPayload } from '@/server/api-error';
 
 interface SignUpDialogProps {
   open: boolean;
@@ -61,7 +62,6 @@ export function SignUpDialog({ open, onOpenChange }: SignUpDialogProps) {
     await authPasswordService.storeToken(token);
     onOpenChange(false);
     router.push('/chat');
-    router.refresh();
   }
 
   async function handleRegister() {
@@ -84,8 +84,8 @@ export function SignUpDialog({ open, onOpenChange }: SignUpDialogProps) {
       await authOtpService.request(email);
       setStep('otp');
       toast.success('Enviamos um código para seu email.');
-    } catch {
-      toast.error('Falha ao criar conta.');
+    } catch (e) {
+      toast.error(toApiErrorPayload(e).error);
     } finally {
       setIsSubmitting(false);
     }
@@ -106,8 +106,8 @@ export function SignUpDialog({ open, onOpenChange }: SignUpDialogProps) {
       const { token } = await authOtpService.verify({ email, code: value });
       if (!token) throw new Error('missing_token');
       await finalizeLogin(token);
-    } catch {
-      toast.error('Código inválido ou expirado.');
+    } catch (e) {
+      toast.error(toApiErrorPayload(e).error);
     } finally {
       setIsSubmitting(false);
     }

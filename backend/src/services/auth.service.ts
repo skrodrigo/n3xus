@@ -39,7 +39,10 @@ export function signJwt(payload: object) {
 
 export const authService = {
   async register(data: RegisterData) {
-    const existing = await prisma.user.findUnique({ where: { email: data.email } });
+    const existing = await prisma.user.findUnique({
+      where: { email: data.email },
+      select: { id: true },
+    });
     if (existing) {
       throw new HTTPException(409, { message: 'User with this email already exists' });
     }
@@ -51,14 +54,20 @@ export const authService = {
         password: hashPassword(data.password),
         emailVerified: false,
       },
+      select: {
+        id: true,
+        email: true,
+      },
     });
 
-    const { password: _pw, ...userWithoutPassword } = user;
-    return userWithoutPassword;
+    return user;
   },
 
   async login(data: LoginData) {
-    const user = await prisma.user.findUnique({ where: { email: data.email } });
+    const user = await prisma.user.findUnique({
+      where: { email: data.email },
+      select: { id: true, password: true, email: true, emailVerified: true },
+    });
     if (!user) {
       throw new HTTPException(401, { message: 'Invalid credentials' });
     }
@@ -69,6 +78,6 @@ export const authService = {
     }
 
     const token = signJwt({ userId: user.id, iat: Math.floor(Date.now() / 1000) });
-    return { token };
+    return { token, email: user.email, emailVerified: user.emailVerified };
   },
 };

@@ -14,7 +14,6 @@ import { Button } from "../ui/button";
 import { SidebarSearch } from "./sidebar-search";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
 import { chatsService } from "@/server/chats";
 import { meService, type MeUser } from "@/server/me";
 
@@ -25,7 +24,6 @@ interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
 export default function AppSidebar({ chats: initialChats, ...props }: AppSidebarProps) {
   const [chats, setChats] = useState(initialChats);
   const [user, setUser] = useState<{ name: string; email: string; avatar: string } | null>(null);
-  const pathname = usePathname();
 
   useEffect(() => {
     const refresh = () => {
@@ -37,7 +35,7 @@ export default function AppSidebar({ chats: initialChats, ...props }: AppSidebar
     refresh();
     window.addEventListener('chats:refresh', refresh);
     return () => window.removeEventListener('chats:refresh', refresh);
-  }, [pathname]);
+  }, []);
 
   useEffect(() => {
     meService.get().then((u: MeUser) => {

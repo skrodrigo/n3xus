@@ -8,7 +8,10 @@ export const authOtpService = {
     });
 
     const body = await res.json().catch(() => null);
-    if (!res.ok) throw new Error(body?.error || `Request failed (${res.status})`);
+    if (!res.ok) {
+      const code = body?.statusCode ?? res.status;
+      throw new Error(JSON.stringify({ statusCode: code, error: body?.error || `Request failed (${code})` }));
+    }
     return body as { success: boolean };
   },
 
@@ -21,7 +24,10 @@ export const authOtpService = {
     });
 
     const body = await res.json().catch(() => null);
-    if (!res.ok) throw new Error(body?.error || `Request failed (${res.status})`);
+    if (!res.ok) {
+      const code = body?.statusCode ?? res.status;
+      throw new Error(JSON.stringify({ statusCode: code, error: body?.error || `Request failed (${code})` }));
+    }
     return body as { token: string };
   },
 };
@@ -36,7 +42,10 @@ export const authPasswordService = {
     });
 
     const body = await res.json().catch(() => null);
-    if (!res.ok) throw new Error(body?.error || `Request failed (${res.status})`);
+    if (!res.ok) {
+      const code = body?.statusCode ?? res.status;
+      throw new Error(JSON.stringify({ statusCode: code, error: body?.error || `Request failed (${code})` }));
+    }
     return body as { otpRequired?: boolean };
   },
 
@@ -49,7 +58,10 @@ export const authPasswordService = {
     });
 
     const body = await res.json().catch(() => null);
-    if (!res.ok) throw new Error(body?.error || `Request failed (${res.status})`);
+    if (!res.ok) {
+      const code = body?.statusCode ?? res.status;
+      throw new Error(JSON.stringify({ statusCode: code, error: body?.error || `Request failed (${code})` }));
+    }
     return body as { token?: string; otpRequired?: boolean };
   },
 
@@ -62,7 +74,10 @@ export const authPasswordService = {
     });
 
     const body = await res.json().catch(() => null);
-    if (!res.ok) throw new Error(body?.error || `Request failed (${res.status})`);
+    if (!res.ok) {
+      const code = body?.statusCode ?? res.status;
+      throw new Error(JSON.stringify({ statusCode: code, error: body?.error || `Request failed (${code})` }));
+    }
     return body as { success: boolean };
   },
 };

@@ -29,6 +29,7 @@ export const authGoogleService = {
         emailVerified,
         image,
       },
+      select: { id: true },
     });
 
     const token = signJwt({ userId: user.id, iat: Math.floor(Date.now() / 1000) });

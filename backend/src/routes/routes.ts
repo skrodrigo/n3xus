@@ -14,6 +14,8 @@ import stripeWebhookRouter from './stripe-webhook.routes.js';
 import otpRouter from './otp.routes.js';
 import jobsRouter from './jobs.routes.js';
 import { cors } from './../common/cors.js';
+import { rateLimit } from './../common/rate-limit.js';
+import { HTTPException } from 'hono/http-exception';
 
 export type AppVariables = {
   prisma: PrismaClient;
@@ -24,6 +26,23 @@ const app = new OpenAPIHono<{ Variables: AppVariables }>();
 
 const corsOrigin = env.NODE_ENV === 'production' ? env.WEB_URL : 'http://localhost:3000';
 app.use('*', cors({ origin: corsOrigin }));
+
+app.use(
+  '*',
+  rateLimit({
+    windowMs: env.RATE_LIMIT_WINDOW_MS ?? 60_000,
+    max: env.RATE_LIMIT_MAX ?? 120,
+  })
+);
+
+app.onError((err, c) => {
+  const statusCode = err instanceof HTTPException ? err.status : 500;
+  const message = err instanceof HTTPException
+    ? (err.message || (err as any)?.res?.message || 'Request failed')
+    : (err as any)?.message || 'Internal server error';
+
+  return c.json({ success: false, error: message, statusCode }, statusCode);
+});
 
 app.get('/', (c) => c.json({ message: 'nexus API up and running!' }));
 

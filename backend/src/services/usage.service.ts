@@ -8,13 +8,25 @@ export const DEFAULT_LIMITS = {
 };
 
 export async function getUserUsage(userId: string) {
-  const subscription = await prisma.subscription.findFirst({
-    where: { referenceId: userId, status: 'active' },
-  });
-
   const limits = DEFAULT_LIMITS;
 
-  const usage = await prisma.userUsage.findUnique({ where: { userId } });
+  const [subscription, usage] = await Promise.all([
+    prisma.subscription.findFirst({
+      where: { referenceId: userId, status: 'active' },
+      select: { id: true },
+    }),
+    prisma.userUsage.findUnique({
+      where: { userId },
+      select: {
+        dayCount: true,
+        weekCount: true,
+        monthCount: true,
+        dayWindowStart: true,
+        weekWindowStart: true,
+        monthWindowStart: true,
+      },
+    }),
+  ]);
 
   const dayCount = usage?.dayCount ?? 0;
   const weekCount = usage?.weekCount ?? 0;
@@ -41,7 +53,17 @@ export async function incrementUserUsage(userId: string) {
   const startOfWeekDate = startOfWeek(now);
   const startOfMonthDate = startOfMonth(now);
 
-  const userUsage = await prisma.userUsage.findUnique({ where: { userId } });
+  const userUsage = await prisma.userUsage.findUnique({
+    where: { userId },
+    select: {
+      dayCount: true,
+      weekCount: true,
+      monthCount: true,
+      dayWindowStart: true,
+      weekWindowStart: true,
+      monthWindowStart: true,
+    },
+  });
 
   const createData = {
     userId,

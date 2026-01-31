@@ -19,7 +19,7 @@ const getPublicChatRoute = createRoute({
 publicRouter.openapi(getPublicChatRoute, async (c) => {
   const { sharePath } = c.req.param();
   const chat = await chatRepository.findPublicBySharePath(sharePath);
-  if (!chat || !chat.isPublic) throw new HTTPException(404, { message: 'Public chat not found' });
+  if (!chat) throw new HTTPException(404, { message: 'Public chat not found' });
   return c.json({ success: true, data: chat }, 200);
 });
 

@@ -19,6 +19,8 @@ const envVariablesSchema = z.object({
   STRIPE_PUBLISHABLE_KEY: z.string().min(1).optional(),
   STRIPE_PRICE_PRO_MONTHLY: z.string().min(1),
   STRIPE_PRICE_PRO_YEARLY: z.string().min(1).optional(),
+  RATE_LIMIT_WINDOW_MS: z.coerce.number().optional(),
+  RATE_LIMIT_MAX: z.coerce.number().optional(),
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
   PORT: z.coerce.number(),
 });

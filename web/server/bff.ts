@@ -11,7 +11,10 @@ export async function requireAuthToken() {
   const cookieStore = await cookies();
   const token = cookieStore.get('token')?.value ?? null;
   if (!token) {
-    return { ok: false as const, res: NextResponse.json({ error: 'Unauthorized' }, { status: 401 }) };
+    return {
+      ok: false as const,
+      res: NextResponse.json({ error: 'Unauthorized', statusCode: 401 }, { status: 401 }),
+    };
   }
   return { ok: true as const, token };
 }
@@ -23,8 +26,11 @@ export async function proxyJson(upstream: Response) {
     : await upstream.text().catch(() => null);
 
   if (!upstream.ok) {
+    const message = typeof payload === 'string'
+      ? payload
+      : payload?.error || `Upstream failed (${upstream.status})`;
     return NextResponse.json(
-      { error: payload?.error || `Upstream failed (${upstream.status})` },
+      { error: message, statusCode: upstream.status },
       { status: upstream.status }
     );
   }

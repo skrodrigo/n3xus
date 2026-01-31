@@ -11,7 +11,8 @@ export const stripeService = {
 
     if (!res.ok) {
       const body = await res.json().catch(() => null);
-      throw new Error(body?.error || `Request failed (${res.status})`);
+      const code = body?.statusCode ?? res.status;
+      throw new Error(JSON.stringify({ statusCode: code, error: body?.error || `Request failed (${code})` }));
     }
 
     return res.json() as Promise<{ id: string; url: string }>;
@@ -25,7 +26,8 @@ export const stripeService = {
 
     if (!res.ok) {
       const body = await res.json().catch(() => null);
-      throw new Error(body?.error || `Request failed (${res.status})`);
+      const code = body?.statusCode ?? res.status;
+      throw new Error(JSON.stringify({ statusCode: code, error: body?.error || `Request failed (${code})` }));
     }
 
     return res.json() as Promise<{ url: string }>;
@@ -39,7 +41,8 @@ export const stripeService = {
 
     if (!res.ok) {
       const body = await res.json().catch(() => null);
-      throw new Error(body?.error || `Request failed (${res.status})`);
+      const code = body?.statusCode ?? res.status;
+      throw new Error(JSON.stringify({ statusCode: code, error: body?.error || `Request failed (${code})` }));
     }
 
     return res.json() as Promise<{ success: boolean }>;

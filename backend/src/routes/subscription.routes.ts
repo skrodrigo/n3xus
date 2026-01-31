@@ -28,6 +28,14 @@ subscriptionRouter.openapi(getRoute, async (c) => {
   const user = c.get('user');
   const subscription = await prisma.subscription.findFirst({
     where: { referenceId: user!.id },
+    select: {
+      id: true,
+      status: true,
+      plan: true,
+      periodStart: true,
+      periodEnd: true,
+      cancelAtPeriodEnd: true,
+    },
   });
   return c.json(subscription, 200);
 });

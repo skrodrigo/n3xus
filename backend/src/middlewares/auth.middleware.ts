@@ -41,12 +41,20 @@ export async function authMiddleware(c: Context, next: Next) {
     throw new HTTPException(401, { message: 'Invalid or expired token' });
   }
 
-  const user = await prisma.user.findUnique({ where: { id: payload.userId } });
+  const user = await prisma.user.findUnique({
+    where: { id: payload.userId },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      image: true,
+      emailVerified: true,
+    },
+  });
   if (!user) {
     throw new HTTPException(401, { message: 'Invalid user' });
   }
 
-  const { password: _pw, ...userWithoutPassword } = user as any;
-  c.set('user', userWithoutPassword);
+  c.set('user', user);
   await next();
 }

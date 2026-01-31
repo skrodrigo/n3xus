@@ -39,6 +39,12 @@ export const otpService = {
         otpHash,
       },
       orderBy: { createdAt: 'desc' },
+      select: {
+        id: true,
+        consumedAt: true,
+        expiresAt: true,
+        attempts: true,
+      },
     });
 
     if (!record) {
@@ -74,6 +80,10 @@ export const otpService = {
         consumedAt: null,
       },
       orderBy: { createdAt: 'desc' },
+      select: {
+        id: true,
+        attempts: true,
+      },
     });
 
     if (!record) return;

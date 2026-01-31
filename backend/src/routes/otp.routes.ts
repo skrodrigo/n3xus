@@ -66,7 +66,10 @@ const verifyOtpRoute = createRoute({
 otpRouter.openapi(requestOtpRoute, async (c) => {
   const { email } = c.req.valid('json');
 
-  const user = await prisma.user.findUnique({ where: { email } });
+  const user = await prisma.user.findUnique({
+    where: { email },
+    select: { id: true },
+  });
   if (!user) {
     return c.json({ success: true }, 200);
   }
@@ -80,7 +83,10 @@ otpRouter.openapi(requestOtpRoute, async (c) => {
 otpRouter.openapi(verifyOtpRoute, async (c) => {
   const { email, code } = c.req.valid('json');
 
-  const user = await prisma.user.findUnique({ where: { email } });
+  const user = await prisma.user.findUnique({
+    where: { email },
+    select: { id: true, email: true, name: true, emailVerified: true },
+  });
   if (!user) {
     throw new HTTPException(400, { message: 'Invalid code' });
   }
@@ -92,9 +98,8 @@ otpRouter.openapi(verifyOtpRoute, async (c) => {
     throw e;
   }
 
-  await prisma.user.update({ where: { id: user.id }, data: { emailVerified: true } });
-
   if (!user.emailVerified) {
+    await prisma.user.update({ where: { id: user.id }, data: { emailVerified: true } });
     await emailService.sendWelcome({ to: user.email, name: user.name });
   }
 

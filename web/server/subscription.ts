@@ -3,7 +3,8 @@ export const subscriptionService = {
     const res = await fetch('/api/subscription', { cache: 'no-store' });
     if (!res.ok) {
       const body = await res.json().catch(() => null);
-      throw new Error(body?.error || `Request failed (${res.status})`);
+      const code = body?.statusCode ?? res.status;
+      throw new Error(JSON.stringify({ statusCode: code, error: body?.error || `Request failed (${code})` }));
     }
     return res.json();
   },
@@ -12,7 +13,8 @@ export const subscriptionService = {
     const res = await fetch('/api/subscription', { method: 'DELETE', cache: 'no-store' });
     if (!res.ok) {
       const body = await res.json().catch(() => null);
-      throw new Error(body?.error || `Request failed (${res.status})`);
+      const code = body?.statusCode ?? res.status;
+      throw new Error(JSON.stringify({ statusCode: code, error: body?.error || `Request failed (${code})` }));
     }
     return res.json();
   },

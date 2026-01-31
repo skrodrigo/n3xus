@@ -10,13 +10,40 @@ export const chatRepository = {
   findByIdForUser(chatId: string, userId: string) {
     return prisma.chat.findFirst({
       where: { id: chatId, userId },
-      include: { messages: { orderBy: { createdAt: 'asc' } } },
+      select: {
+        id: true,
+        title: true,
+        sharePath: true,
+        isPublic: true,
+        updatedAt: true,
+        messages: {
+          orderBy: { createdAt: 'asc' },
+          select: {
+            id: true,
+            role: true,
+            content: true,
+            createdAt: true,
+          },
+        },
+      },
+    });
+  },
+
+  findMetaForUser(chatId: string, userId: string) {
+    return prisma.chat.findFirst({
+      where: { id: chatId, userId },
+      select: { id: true },
     });
   },
 
   findManyForUser(userId: string) {
     return prisma.chat.findMany({
       where: { userId },
+      select: {
+        id: true,
+        title: true,
+        updatedAt: true,
+      },
       orderBy: { updatedAt: 'desc' },
     });
   },
@@ -34,10 +61,35 @@ export const chatRepository = {
     });
   },
 
+  findShareInfoForUser(chatId: string, userId: string) {
+    return prisma.chat.findFirst({
+      where: { id: chatId, userId },
+      select: {
+        id: true,
+        sharePath: true,
+      },
+    });
+  },
+
   findPublicBySharePath(sharePath: string) {
     return prisma.chat.findUnique({
-      where: { sharePath },
-      include: { messages: { orderBy: { createdAt: 'asc' } } },
+      where: { sharePath, isPublic: true },
+      select: {
+        id: true,
+        title: true,
+        sharePath: true,
+        isPublic: true,
+        updatedAt: true,
+        messages: {
+          orderBy: { createdAt: 'asc' },
+          select: {
+            id: true,
+            role: true,
+            content: true,
+            createdAt: true,
+          },
+        },
+      },
     });
   },
 };

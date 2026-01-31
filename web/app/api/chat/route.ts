@@ -7,7 +7,7 @@ export async function POST(req: Request) {
 
   const body = await req.json().catch(() => null);
   if (!body) {
-    return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
+    return NextResponse.json({ error: 'Invalid JSON body', statusCode: 400 }, { status: 400 });
   }
 
   const upstream = await fetch(`${getApiBaseUrl()}/api/chat`, {

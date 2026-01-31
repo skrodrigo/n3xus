@@ -74,8 +74,7 @@ const cancelRoute = createRoute({
 
 stripeRouter.openapi(createCheckoutRoute, async (c) => {
   const user = c.get('user') as { id: string };
-  const body = await c.req.json();
-  const { plan } = body as { plan: 'pro_monthly' | 'pro_yearly' };
+  const { plan } = c.req.valid('json') as { plan: 'pro_monthly' | 'pro_yearly' };
   return c.json(await stripeService.createSubscriptionCheckoutSession({ userId: user.id, plan }), 200);
 });
 

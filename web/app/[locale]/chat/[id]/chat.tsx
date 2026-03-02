@@ -123,21 +123,17 @@ const imageModels = [
   {
     name: 'Recraft',
     value: 'recraft/recraft-v4-pro',
-    icon: (
-      <div className="flex size-5 items-center justify-center rounded bg-muted text-[10px] font-semibold">
-        R
-      </div>
-    ),
+    icon: <Image src="/models/recraft.svg" alt="recraft" width={20} height={20} priority quality={100} />,
   },
   {
     name: 'Grok',
     value: 'xai/grok-imagine-image-pro',
-    icon: <Image src="/models/grok.svg" alt="xai" width={20} height={20} priority quality={100} />,
+    icon: <Image src="/models/xai.svg" alt="xai" width={20} height={20} priority quality={100} />,
   },
   {
-    name: 'ChatGPT',
+    name: 'DALL-E',
     value: 'openai/gpt-5-nano',
-    icon: <Image src="/models/chatgpt.svg" alt="openai" width={20} height={20} priority quality={100} />,
+    icon: <Image src="/models/dalle.svg" alt="openai" width={20} height={20} priority quality={100} />,
   },
 ]
 
@@ -164,9 +160,18 @@ export function Chat({
   const [input, setInput] = useState('');
   const [attachments, setAttachments] = useState<AttachmentData[]>([]);
   const attachmentsRef = useRef<AttachmentData[]>([]);
-  const [model, setModel] = useState<string>(() => initialModel ?? models[0].value)
-  const [modelTab, setModelTab] = useState<'text' | 'image'>('text')
-  const [imageModel, setImageModel] = useState<string>(() => imageModels[0].value)
+  const [model, setModel] = useState<string>(() => {
+    if (initialModel && models.some((m) => m.value === initialModel)) return initialModel
+    return models[0].value
+  })
+  const [modelTab, setModelTab] = useState<'text' | 'image'>(() => {
+    if (initialModel && imageModels.some((m) => m.value === initialModel)) return 'image'
+    return 'text'
+  })
+  const [imageModel, setImageModel] = useState<string>(() => {
+    if (initialModel && imageModels.some((m) => m.value === initialModel)) return initialModel
+    return imageModels[0].value
+  })
   const [title, setTitle] = useState(initialTitle ?? '')
   const [webSearch, setWebSearch] = useState(false)
   const [isStreaming, setIsStreaming] = useState(false);
@@ -339,13 +344,6 @@ export function Chat({
 
     try {
       if (modelTab === 'image') {
-        if (!chatId) {
-          setIsStreaming(false)
-          setMessages((prev: UIMessage[]) => prev.slice(0, -1))
-          toast.error('Você precisa abrir um chat antes de gerar imagem')
-          return
-        }
-
         const result = await imagesService.generate({
           chatId,
           prompt: trimmedInput,
@@ -375,6 +373,15 @@ export function Chat({
         )
 
         setIsStreaming(false)
+
+        if (!chatId && !isTemporary && result.chatId) {
+          if (typeof window !== 'undefined') {
+            window.dispatchEvent(new Event('chats:refresh'))
+          }
+          router.refresh()
+          router.push(`/chat/${result.chatId}`)
+        }
+
         return
       }
 
@@ -592,7 +599,7 @@ export function Chat({
                   </Tooltip>
                 </TooltipProvider>
                 <PromptInputModelSelectContent>
-                  <div className="px-2 pt-2">
+                  <div>
                     <Tabs value={modelTab} onValueChange={(v) => setModelTab(v as 'text' | 'image')}>
                       <TabsList className="w-full">
                         <TabsTrigger className="flex-1" value="text">
@@ -970,7 +977,7 @@ export function Chat({
                     </Tooltip>
                   </TooltipProvider>
                   <PromptInputModelSelectContent>
-                    <div className="px-2 pt-2">
+                    <div className="pb-2">
                       <Tabs value={modelTab} onValueChange={(v) => setModelTab(v as 'text' | 'image')}>
                         <TabsList className="w-full">
                           <TabsTrigger className="flex-1" value="text">

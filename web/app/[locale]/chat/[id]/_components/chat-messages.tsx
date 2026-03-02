@@ -116,6 +116,25 @@ export function ChatMessages({
 		return rawMessages
 			.map((message) => {
 				const content = message?.content
+				if (message.role !== 'user' && message.role !== 'assistant') return null
+
+				if (content?.type === 'file' && typeof content?.url === 'string') {
+					return {
+						id: message.id,
+						role: message.role,
+						parts: [
+							{
+								type: 'file',
+								url: content.url,
+								mediaType:
+									typeof content?.mediaType === 'string'
+										? content.mediaType
+										: undefined,
+							},
+						],
+					} as UIMessage
+				}
+
 				const text =
 					typeof content === 'string'
 						? content
@@ -125,9 +144,7 @@ export function ChatMessages({
 								? content.content
 								: null
 
-				if (!text || (message.role !== 'user' && message.role !== 'assistant')) {
-					return null
-				}
+				if (!text) return null
 
 				return {
 					id: message.id,

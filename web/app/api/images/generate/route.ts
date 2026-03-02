@@ -1,4 +1,5 @@
 import { getApiBaseUrl, proxyJson, requireAuthToken } from '@/data/bff'
+import { revalidateTag } from 'next/cache'
 
 export async function POST(req: Request) {
 	const auth = await requireAuthToken()
@@ -19,5 +20,12 @@ export async function POST(req: Request) {
 		body: JSON.stringify(body),
 	})
 
-	return proxyJson(upstream)
+	const res = await proxyJson(upstream)
+	const payload = await res.clone().json().catch(() => null)
+	const chatId = payload?.data?.chatId
+	if (typeof chatId === 'string' && chatId.length > 0) {
+		revalidateTag(`chat:${chatId}`, {})
+	}
+	revalidateTag('chats:list', {})
+	return res
 }

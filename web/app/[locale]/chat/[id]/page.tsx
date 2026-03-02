@@ -36,6 +36,22 @@ function toUiMessages(messages: any[]): UIMessage[] {
   return messages
     .map((message) => {
       const content = message?.content;
+      if (message.role !== 'user' && message.role !== 'assistant') return null;
+
+      if (content?.type === 'file' && typeof content?.url === 'string') {
+        return {
+          id: message.id,
+          role: message.role,
+          parts: [
+            {
+              type: 'file',
+              url: content.url,
+              mediaType: typeof content?.mediaType === 'string' ? content.mediaType : undefined,
+            },
+          ],
+        } as UIMessage;
+      }
+
       const text = typeof content === 'string'
         ? content
         : typeof content?.text === 'string'
@@ -44,7 +60,8 @@ function toUiMessages(messages: any[]): UIMessage[] {
             ? content.content
             : null;
 
-      if (!text || (message.role !== 'user' && message.role !== 'assistant')) return null;
+      if (!text) return null;
+
       return {
         id: message.id,
         role: message.role,

@@ -2,6 +2,8 @@ import { OpenAPIHono, createRoute, z } from '@hono/zod-openapi'
 import type { AppVariables } from './routes.js'
 import { authMiddleware } from './../middlewares/auth.middleware.js'
 import { prisma } from './../common/prisma.js'
+import { chatBranchRepository } from './../repositories/chat-branch.repository.js'
+import { messageRepository } from './../repositories/message.repository.js'
 import { generateAndStoreImage } from './../services/image-generation.service.js'
 
 const imagesRouter = new OpenAPIHono<{ Variables: AppVariables }>()
@@ -16,7 +18,7 @@ const generateRoute = createRoute({
 			content: {
 				'application/json': {
 					schema: z.object({
-						chatId: z.string().min(1),
+						chatId: z.string().min(1).optional(),
 						messageId: z.string().min(1).optional(),
 						prompt: z.string().min(1),
 						model: z.string().min(1),
@@ -34,6 +36,7 @@ const generateRoute = createRoute({
 					schema: z.object({
 						success: z.boolean(),
 						data: z.object({
+							chatId: z.string(),
 							id: z.string(),
 							imageUrl: z.string(),
 							mediaType: z.string(),
@@ -53,8 +56,21 @@ imagesRouter.openapi(generateRoute, async (c) => {
 	const user = c.get('user')
 	const body = c.req.valid('json')
 
+	let chatId = body.chatId
+	if (!chatId) {
+		const created = await prisma.chat.create({
+			data: {
+				userId: user!.id,
+				title: body.prompt.slice(0, 80),
+				model: body.model,
+			},
+			select: { id: true },
+		})
+		chatId = created.id
+	}
+
 	const data = await generateAndStoreImage({
-		chatId: body.chatId,
+		chatId,
 		messageId: body.messageId ?? null,
 		userId: user!.id,
 		prompt: body.prompt,
@@ -62,7 +78,28 @@ imagesRouter.openapi(generateRoute, async (c) => {
 		returnBase64Preview: body.returnBase64Preview ?? false,
 	})
 
-	return c.json({ success: true, data }, 200)
+	const ensured = await chatBranchRepository.ensureDefaultBranch(chatId)
+	const effectiveBranchId = (
+		await prisma.chat.findUnique({ where: { id: chatId }, select: { activeBranchId: true } })
+	)?.activeBranchId ?? ensured?.id ?? null
+	if (!effectiveBranchId) {
+		return c.json({ success: true, data: { chatId, ...data } }, 200)
+	}
+
+	const userMessage = await messageRepository.create(chatId, 'user', {
+		type: 'text',
+		text: body.prompt,
+	})
+	await chatBranchRepository.appendMessageToBranch(effectiveBranchId, userMessage.id)
+
+	const assistantMessage = await messageRepository.create(chatId, 'assistant', {
+		type: 'file',
+		mediaType: data.mediaType,
+		url: data.imageUrl,
+	})
+	await chatBranchRepository.appendMessageToBranch(effectiveBranchId, assistantMessage.id)
+
+	return c.json({ success: true, data: { chatId, ...data } }, 200)
 })
 
 const listRoute = createRoute({

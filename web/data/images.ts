@@ -1,5 +1,5 @@
 export interface GenerateImageInput {
-	chatId: string
+	chatId?: string
 	messageId?: string
 	prompt: string
 	model: string
@@ -7,6 +7,7 @@ export interface GenerateImageInput {
 }
 
 export interface GenerateImageOutput {
+	chatId: string
 	id: string
 	imageUrl: string
 	mediaType: string
@@ -35,7 +36,7 @@ export const imagesService = {
 
 		const payload = await res.json().catch(() => null)
 		const data = payload?.data as GenerateImageOutput | undefined
-		if (!data?.id || !data?.imageUrl || !data?.mediaType) {
+		if (!data?.chatId || !data?.id || !data?.imageUrl || !data?.mediaType) {
 			throw new Error(
 				JSON.stringify({
 					statusCode: 500,

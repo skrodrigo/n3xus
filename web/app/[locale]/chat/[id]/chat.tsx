@@ -782,7 +782,7 @@ export function Chat({
                             onClick={handleShare}
                             disabled={isPending}
                           >
-                            <Icon icon={Share03Icon} className="size-5 md:size-4" />
+                            <Icon icon={Share03Icon} className="size-[18px] md:size-[18px]" />
                           </Button>
                         </TooltipTrigger>
                         <TooltipContent side="bottom" sideOffset={6}>
@@ -796,7 +796,7 @@ export function Chat({
                           <DropdownMenuTrigger asChild>
                             <TooltipTrigger asChild>
                               <Button variant="ghost" size="icon" className="size-8">
-                                <Icon icon={MoreHorizontalIcon} className="size-5 md:size-4" />
+                                <Icon icon={MoreHorizontalIcon} className="size-[18px] md:size-[18px]" />
                               </Button>
                             </TooltipTrigger>
                           </DropdownMenuTrigger>
@@ -807,17 +807,17 @@ export function Chat({
                         <DropdownMenuItem onClick={handleTogglePin} disabled={isPending || isLoading}>
                           <Icon
                             icon={isPinned ? PinOffIcon : PinIcon}
-                            className="text-muted-foreground mr-2 size-4"
+                            className="text-muted-foreground mr-2 size-[18px]"
                           />
                           <span>{isPinned ? t('unpin') : t('pin')}</span>
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={handleOpenRename} disabled={isPending || isLoading}>
-                          <Icon icon={Edit03Icon} className="text-muted-foreground mr-2 size-4" />
+                          <Icon icon={Edit03Icon} className="text-muted-foreground mr-2 size-[18px]" />
                           <span>{t('rename')}</span>
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem onClick={handleArchive} disabled={isPending}>
-                          <Icon icon={Archive03Icon} className="text-muted-foreground mr-2 size-4" />
+                          <Icon icon={Archive03Icon} className="text-muted-foreground mr-2 size-[18px]" />
                           <span>{t('archive')}</span>
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
@@ -826,7 +826,7 @@ export function Chat({
                           onClick={() => setDeleteDialogOpen(true)}
                           disabled={isPending}
                         >
-                          <Icon icon={Delete02Icon} className="text-muted-foreground mr-2 size-4" />
+                          <Icon icon={Delete02Icon} className="text-muted-foreground mr-2 size-[18px]" />
                           <span>{t('delete')}</span>
                         </DropdownMenuItem>
                       </DropdownMenuContent>
@@ -842,7 +842,7 @@ export function Chat({
                       variant="secondary"
                       className="h-8 md:hidden"
                     >
-                      <Icon icon={GiftIcon} className="size-4" />
+                      <Icon icon={GiftIcon} className="size-[18px]" />
                       Upgrade
                     </Button>
                   )}
@@ -878,7 +878,7 @@ export function Chat({
                     variant="secondary"
                     className="mb-1 h-9"
                   >
-                    <Icon icon={GiftIcon} className="size-4" />
+                    <Icon icon={GiftIcon} className="size-[18px]" />
                     Upgrade
                   </Button>
                 </div>
@@ -1160,7 +1160,7 @@ export function Chat({
                               onClick={handleShare}
                               disabled={isPending}
                             >
-                              <Icon icon={Share03Icon} className="size-5 md:size-4" />
+                              <Icon icon={Share03Icon} className="size-[18px] md:size-[18px]" />
                             </Button>
                           </TooltipTrigger>
                           <TooltipContent side="bottom" sideOffset={6}>
@@ -1174,7 +1174,7 @@ export function Chat({
                             <DropdownMenuTrigger asChild>
                               <TooltipTrigger asChild>
                                 <Button variant="ghost" size="icon" className="size-8">
-                                  <Icon icon={MoreHorizontalIcon} className="size-5 md:size-4" />
+                                  <Icon icon={MoreHorizontalIcon} className="size-[18px] md:size-[18px]" />
                                 </Button>
                               </TooltipTrigger>
                             </DropdownMenuTrigger>
@@ -1185,17 +1185,17 @@ export function Chat({
                           <DropdownMenuItem onClick={handleTogglePin} disabled={isPending || isLoading}>
                             <Icon
                               icon={isPinned ? PinOffIcon : PinIcon}
-                              className="text-muted-foreground mr-2 size-4"
+                              className="text-muted-foreground mr-2 size-[18px]"
                             />
                             <span>{isPinned ? t('unpin') : t('pin')}</span>
                           </DropdownMenuItem>
                           <DropdownMenuItem onClick={handleOpenRename} disabled={isPending || isLoading}>
-                            <Icon icon={Edit03Icon} className="text-muted-foreground mr-2 size-4" />
+                            <Icon icon={Edit03Icon} className="text-muted-foreground mr-2 size-[18px]" />
                             <span>{t('rename')}</span>
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
                           <DropdownMenuItem onClick={handleArchive} disabled={isPending}>
-                            <Icon icon={Archive03Icon} className="text-muted-foreground mr-2 size-4" />
+                            <Icon icon={Archive03Icon} className="text-muted-foreground mr-2 size-[18px]" />
                             <span>{t('archive')}</span>
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
@@ -1204,7 +1204,7 @@ export function Chat({
                             onClick={() => setDeleteDialogOpen(true)}
                             disabled={isPending}
                           >
-                            <Icon icon={Delete02Icon} className="text-muted-foreground mr-2 size-4" />
+                            <Icon icon={Delete02Icon} className="text-muted-foreground mr-2 size-[18px]" />
                             <span>{t('delete')}</span>
                           </DropdownMenuItem>
                         </DropdownMenuContent>
@@ -1220,7 +1220,7 @@ export function Chat({
                         variant="secondary"
                         className="h-8 md:hidden"
                       >
-                        <Icon icon={GiftIcon} className="size-4" />
+                        <Icon icon={GiftIcon} className="size-[18px]" />
                         Upgrade
                       </Button>
                     )}
@@ -1235,9 +1235,9 @@ export function Chat({
                             title={isTemporary ? t('returnToNormalChat') : t('temporaryChat')}
                           >
                             {isTemporary ? (
-                              <Icon icon={BubbleChatTemporaryIcon} className="size-5 md:size-4" />
+                              <Icon icon={BubbleChatTemporaryIcon} className="size-[18px] md:size-[18px]" />
                             ) : (
-                              <Icon icon={BubbleChatIcon} className="size-5 md:size-4" />
+                              <Icon icon={BubbleChatIcon} className="size-[18px] md:size-[18px]" />
                             )}
                             <span className="sr-only">{isTemporary ? t('returnToNormalChat') : t('temporaryChat')}</span>
                           </Button>
@@ -1256,7 +1256,7 @@ export function Chat({
                       variant="secondary"
                       className="mb-1 h-9"
                     >
-                      <Icon icon={GiftIcon} className="size-4" />
+                      <Icon icon={GiftIcon} className="size-[18px]" />
                       Upgrade
                     </Button>
                   </div>
@@ -1417,7 +1417,7 @@ export function Chat({
                       onClick={handleCloseArtifactPanel}
                       className="p-1.5 hover:bg-muted cursor-pointer rounded-md transition-colors shrink-0"
                     >
-                      <Icon icon={Cancel01Icon} className="size-5" />
+                      <Icon icon={Cancel01Icon} className="size-[18px]" />
                     </button>
                   </div>
                   <div className="flex-1 overflow-y-auto scrollbar-hidden p-2">

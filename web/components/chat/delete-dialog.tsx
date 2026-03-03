@@ -49,7 +49,7 @@ export function DeleteDialog({
 				disabled={isPending || isLoading}
 			>
 				{isLoading ? (
-					<Icon icon={Loading03Icon} className="mr-2 size-4 animate-spin" />
+					<Icon icon={Loading03Icon} className="mr-2 size-[18px] animate-spin" />
 				) : (
 					t('confirm')
 				)}

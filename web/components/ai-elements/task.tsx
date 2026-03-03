@@ -66,9 +66,9 @@ export const TaskTrigger = ({
   <CollapsibleTrigger asChild className={cn('group', className)} {...props}>
     {children ?? (
       <div className="flex cursor-pointer items-center gap-2 text-muted-foreground hover:text-foreground">
-        <Icon icon={Search01Icon} className="size-4" />
+        <Icon icon={Search01Icon} className="size-[18px]" />
         <p className="text-sm">{title}</p>
-        <Icon icon={ArrowDown01Icon} className="size-4 transition-transform group-data-[state=open]:rotate-180" />
+        <Icon icon={ArrowDown01Icon} className="size-[18px] transition-transform group-data-[state=open]:rotate-180" />
       </div>
     )}
   </CollapsibleTrigger>

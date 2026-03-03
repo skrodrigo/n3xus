@@ -233,7 +233,7 @@ export const StackTraceError = memo(
       )}
       {...props}
     >
-      <Icon icon={Alert02Icon} className="size-4 shrink-0 text-destructive" />
+      <Icon icon={Alert02Icon} className="size-[18px] shrink-0 text-destructive" />
       {children}
     </div>
   )
@@ -356,7 +356,7 @@ export const StackTraceExpandButton = memo(
         <Icon
           icon={ArrowDown01Icon}
           className={cn(
-            "size-4 text-muted-foreground transition-transform",
+            "size-[18px] text-muted-foreground transition-transform",
             isOpen ? "rotate-180" : "rotate-0"
           )}
         />

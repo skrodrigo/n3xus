@@ -39,7 +39,7 @@ export const AgentHeader = memo(
       {...props}
     >
       <div className="flex items-center gap-2">
-        <Icon icon={BotIcon} className="size-4 text-muted-foreground" />
+        <Icon icon={BotIcon} className="size-[18px] text-muted-foreground" />
         <span className="font-medium text-sm">{name}</span>
         {model && (
           <Badge className="font-mono text-xs" variant="secondary">

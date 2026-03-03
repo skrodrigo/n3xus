@@ -224,7 +224,7 @@ export const WebPreviewConsole = ({
           <Icon
             icon={ArrowDown01Icon}
             className={cn(
-              "size-4 transition-transform duration-200",
+              "size-[18px] transition-transform duration-200",
               consoleOpen && "rotate-180"
             )}
           />

@@ -107,7 +107,7 @@ function PaginationEllipsis({
       className={cn("flex size-9 items-center justify-center", className)}
       {...props}
     >
-      <Icon icon={MoreHorizontalIcon} className="size-4" />
+      <Icon icon={MoreHorizontalIcon} className="size-[18px]" />
       <span className="sr-only">More pages</span>
     </span>
   )

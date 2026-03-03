@@ -81,7 +81,7 @@ export const PackageInfoName = ({
 
   return (
     <div className={cn("flex items-center gap-2", className)} {...props}>
-      <Icon icon={Package01Icon} className="size-4 text-muted-foreground" />
+      <Icon icon={Package01Icon} className="size-[18px] text-muted-foreground" />
       <span className="font-medium font-mono text-sm">{children ?? name}</span>
     </div>
   );
@@ -97,11 +97,11 @@ const changeTypeStyles: Record<ChangeType, string> = {
 };
 
 const changeTypeIcons: Record<ChangeType, React.ReactNode> = {
-  major: <Icon icon={ArrowRight01Icon} className="size-4" />,
-  minor: <Icon icon={ArrowRight01Icon} className="size-4" />,
-  patch: <Icon icon={ArrowRight01Icon} className="size-4" />,
-  added: <Icon icon={PlusSignIcon} className="size-4" />,
-  removed: <Icon icon={MinusSignIcon} className="size-4" />,
+  major: <Icon icon={ArrowRight01Icon} className="size-[18px]" />,
+  minor: <Icon icon={ArrowRight01Icon} className="size-[18px]" />,
+  patch: <Icon icon={ArrowRight01Icon} className="size-[18px]" />,
+  added: <Icon icon={PlusSignIcon} className="size-[18px]" />,
+  removed: <Icon icon={MinusSignIcon} className="size-[18px]" />,
 };
 
 export type PackageInfoChangeTypeProps = HTMLAttributes<HTMLDivElement>;
@@ -158,7 +158,7 @@ export const PackageInfoVersion = ({
         <>
           {currentVersion && <span>{currentVersion}</span>}
           {currentVersion && newVersion && (
-            <Icon icon={ArrowRight01Icon} className="size-4" />
+            <Icon icon={ArrowRight01Icon} className="size-[18px]" />
           )}
           {newVersion && (
             <span className="font-medium text-foreground">{newVersion}</span>

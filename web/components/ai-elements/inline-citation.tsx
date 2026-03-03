@@ -181,7 +181,7 @@ export const InlineCitationCarouselPrev = ({
       type="button"
       {...props}
     >
-      <Icon icon={ArrowLeft01Icon} className="size-4 text-muted-foreground" />
+      <Icon icon={ArrowLeft01Icon} className="size-[18px] text-muted-foreground" />
     </button>
   );
 };
@@ -208,7 +208,7 @@ export const InlineCitationCarouselNext = ({
       type="button"
       {...props}
     >
-      <Icon icon={ArrowRight01Icon} className="size-4 text-muted-foreground" />
+      <Icon icon={ArrowRight01Icon} className="size-[18px] text-muted-foreground" />
     </button>
   );
 };

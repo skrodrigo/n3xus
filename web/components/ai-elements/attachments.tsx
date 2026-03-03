@@ -209,7 +209,7 @@ export const AttachmentPreview = ({
 }: AttachmentPreviewProps) => {
   const { data, mediaCategory, variant } = useAttachmentContext();
 
-  const iconSize = variant === "inline" ? "size-4" : "size-4";
+  const iconSize = variant === "inline" ? "size-[18px]" : "size-[18px]";
 
   const renderImage = (
     url: string,
@@ -265,7 +265,7 @@ export const AttachmentPreview = ({
       className={cn(
         "flex shrink-0 items-center justify-center overflow-hidden",
         variant === "grid" && "size-full bg-muted",
-        variant === "inline" && "size-5 rounded bg-background",
+        variant === "inline" && "size-[18px] rounded bg-background",
         variant === "list" && "size-12 rounded bg-muted",
         className
       )}
@@ -333,18 +333,18 @@ export const AttachmentRemove = ({
       aria-label={label}
       className={cn(
         variant === "grid" && [
-          "absolute top-2 right-2 size-5 rounded-full p-0",
+          "absolute top-2 right-2 size-[18px] rounded-full p-0",
           "bg-background/80 backdrop-blur-sm",
           "opacity-0 transition-opacity group-hover:opacity-100",
           "hover:bg-background",
-          "[&>svg]:size-4",
+          "[&>svg]:size-[18px]",
         ],
         variant === "inline" && [
-          "size-5 rounded p-0",
+          "size-[18px] rounded p-0",
           "opacity-0 transition-opacity group-hover:opacity-100",
           "[&>svg]:size-2.5",
         ],
-        variant === "list" && ["size-8 shrink-0 rounded p-0", "[&>svg]:size-4"],
+        variant === "list" && ["size-8 shrink-0 rounded p-0", "[&>svg]:size-[18px]"],
         className
       )}
       onClick={(e) => {

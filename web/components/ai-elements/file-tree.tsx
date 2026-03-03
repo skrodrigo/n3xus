@@ -133,15 +133,15 @@ export const FileTreeFolder = ({
               <Icon
                 icon={ArrowRight01Icon}
                 className={cn(
-                  "size-4 shrink-0 text-muted-foreground transition-transform",
+                  "size-[18px] shrink-0 text-muted-foreground transition-transform",
                   isExpanded && "rotate-90"
                 )}
               />
               <FileTreeIcon>
                 {isExpanded ? (
-                  <Icon icon={FolderOpenIcon} className="size-4 text-blue-500" />
+                  <Icon icon={FolderOpenIcon} className="size-[18px] text-blue-500" />
                 ) : (
-                  <Icon icon={Folder01Icon} className="size-4 text-blue-500" />
+                  <Icon icon={Folder01Icon} className="size-[18px] text-blue-500" />
                 )}
               </FileTreeIcon>
               <FileTreeName>{name}</FileTreeName>
@@ -203,9 +203,9 @@ export const FileTreeFile = ({
       >
         {children ?? (
           <>
-            <span className="size-4" /> {/* Spacer for alignment */}
+            <span className="size-[18px]" /> {/* Spacer for alignment */}
             <FileTreeIcon>
-              {icon ?? <Icon icon={File01Icon} className="size-4 text-muted-foreground" />}
+              {icon ?? <Icon icon={File01Icon} className="size-[18px] text-muted-foreground" />}
             </FileTreeIcon>
             <FileTreeName>{name}</FileTreeName>
           </>

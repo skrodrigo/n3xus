@@ -33,7 +33,7 @@ export function SidebarSearch({ chats }: SidebarSearchProps) {
         className="w-full justify-start gap-2 px-2 h-9 rounded-full text-muted-foreground hover:text-foreground hover:bg-sidebar-accent"
         onClick={() => setOpen(true)}
       >
-        <Icon icon={Search01Icon} className="size-4" />
+        <Icon icon={Search01Icon} className="size-[18px]" />
         <span>{t('sidebar.searchChats')}</span>
       </Button>
 

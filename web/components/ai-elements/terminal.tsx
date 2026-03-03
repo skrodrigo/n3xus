@@ -103,7 +103,7 @@ export const TerminalTitle = ({
     className={cn("flex items-center gap-2 text-sm text-zinc-400", className)}
     {...props}
   >
-    <Icon icon={TerminalIcon} className="size-4" />
+    <Icon icon={TerminalIcon} className="size-[18px]" />
     {children ?? "Terminal"}
   </div>
 );

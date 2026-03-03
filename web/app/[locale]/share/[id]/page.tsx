@@ -86,7 +86,7 @@ export default async function SharedChatPage({ params }: { params: Promise<{ id:
         <Button asChild className='group' variant="default">
           <Link href="/chat">
             <span>{t('continueToPumkin')}</span>
-            <Icon icon={ArrowRight01Icon} className="group-hover:ml-3  size-4 transition-all" />
+            <Icon icon={ArrowRight01Icon} className="group-hover:ml-3  size-[18px] transition-all" />
           </Link>
         </Button>
       </div>

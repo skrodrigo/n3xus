@@ -58,7 +58,7 @@ export const ConversationScrollButton = ({
         variant="secondary"
         {...props}
       >
-        <Icon icon={ArrowDown01Icon} className="size-4" />
+        <Icon icon={ArrowDown01Icon} className="size-[18px]" />
       </Button>
     )
   );

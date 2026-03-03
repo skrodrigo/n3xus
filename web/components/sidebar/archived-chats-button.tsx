@@ -75,7 +75,7 @@ export function ArchivedChatsButton(props: {
 				className="w-full justify-start gap-2 px-2 h-9 rounded-full text-muted-foreground hover:text-foreground hover:bg-sidebar-accent"
 				onClick={() => setOpen(true)}
 			>
-				<Icon icon={Archive03Icon} className="size-4" />
+				<Icon icon={Archive03Icon} className="size-[18px]" />
 				<span>{t('sidebar.archived')}</span>
 			</Button>
 
@@ -88,7 +88,7 @@ export function ArchivedChatsButton(props: {
 				<CommandInput placeholder={t('sidebar.archivedSearchPlaceholder')} />
 				<CommandList>
 					<CommandEmpty className='flex w-full justify-center items-center py-4'>
-						{isLoading ? <Icon icon={Loading03Icon} className="size-4 animate-spin" /> : t('sidebar.noArchivedChats')}
+						{isLoading ? <Icon icon={Loading03Icon} className="size-[18px] animate-spin" /> : t('sidebar.noArchivedChats')}
 					</CommandEmpty>
 					<CommandGroup heading={t('sidebar.archivedDescription')}>
 						{items.map((c) => (

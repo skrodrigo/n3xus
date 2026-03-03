@@ -253,6 +253,171 @@ export function ChatMessages({
 		}
 	}
 
+	const refreshMessageBranches = useCallback(
+		async (messageId: string, currentBranchId?: string | null) => {
+			if (!chatId) return
+			try {
+				const data = await chatsService.getMessageBranches(
+					chatId,
+					messageId,
+					currentBranchId ?? activeBranchId,
+				)
+				const options = Array.isArray(data?.options) ? data.options : []
+				if (options.length <= 1) return
+				setMessageBranches((prev) => ({
+					...prev,
+					[messageId]: {
+						options,
+						currentIndex:
+							typeof data?.currentIndex === 'number'
+								? data.currentIndex
+								: options.length - 1,
+						currentBranchId:
+							data?.currentBranchId ??
+							(currentBranchId ?? activeBranchId ?? ''),
+					},
+				}))
+			} catch {
+			}
+		},
+		[activeBranchId, chatId],
+	)
+
+	const handleRetryAssistant = useCallback(
+		async (assistantMessageIndex: number) => {
+			if (isStreaming) return
+			if (!chatId && !isTemporary) return
+
+			let userMessageIndex = -1
+			for (let i = assistantMessageIndex - 1; i >= 0; i -= 1) {
+				if (messages[i]?.role === 'user') {
+					userMessageIndex = i
+					break
+				}
+			}
+			if (userMessageIndex < 0) return
+
+			const userMessage = messages[userMessageIndex]
+			const userMessageId =
+				userMessage?.id ?? `m-${userMessageIndex}`
+
+			const updatedMessages = messages.slice(0, userMessageIndex + 1)
+			const assistantMessage: UIMessage = {
+				id: (Date.now() + 1).toString(),
+				role: 'assistant',
+				parts: [{ type: 'text', text: '' }],
+			}
+
+			setMessages([...updatedMessages, assistantMessage])
+			setIsStreaming(true)
+
+			try {
+				let accumulatedText = ''
+				let createdChatId: string | null = null
+				let nextBranchId: string | null = null
+
+				const streamFn = isTemporary
+					? chatService.streamTemporaryChat
+					: chatService.streamChat
+
+				await streamFn({
+					body: {
+						messages: updatedMessages,
+						model,
+						webSearch: canWebSearch ? webSearch : false,
+						chatId,
+						branchId: activeBranchId,
+						isEdit: true,
+						lastMessageId: userMessageId,
+					},
+					onEvent: (ev) => {
+						if (ev.type === 'chat.created') {
+							createdChatId = ev.chatId
+							if (typeof ev.branchId === 'string') {
+								nextBranchId = ev.branchId
+								setActiveBranchId(ev.branchId)
+							}
+							if (typeof ev.assistantMessageId === 'string') {
+								const newId = ev.assistantMessageId
+								setMessages((prev: UIMessage[]) =>
+									prev.map((msg: UIMessage) =>
+										msg.id === assistantMessage.id
+											? { ...msg, id: newId }
+											: msg,
+									),
+								)
+							}
+						}
+
+						if (ev.type === 'response.output_text.delta') {
+							accumulatedText += ev.delta
+							setMessages((prev: UIMessage[]) =>
+								prev.map((msg: UIMessage) =>
+									msg.id === assistantMessage.id
+										? {
+											...msg,
+											parts: [
+												{ type: 'text', text: accumulatedText },
+											],
+										}
+										: msg,
+								),
+							)
+						}
+
+						if (ev.type === 'response.completed') {
+							if (!createdChatId) createdChatId = ev.chatId
+							if (typeof ev.branchId === 'string') {
+								nextBranchId = ev.branchId
+								setActiveBranchId(ev.branchId)
+							}
+						}
+
+						if (ev.type === 'response.error') {
+							throw new Error(ev.error)
+						}
+					},
+				})
+
+				setIsStreaming(false)
+				await refreshMessageBranches(userMessageId, nextBranchId)
+
+				const finalChatId = chatId || createdChatId
+				if (!finalChatId) return
+
+				try {
+					const payload = await chatsService.getById(
+						finalChatId,
+						nextBranchId ?? activeBranchId,
+					)
+					const chat = payload?.data
+					const nextMessages = toUiMessages(chat?.messages)
+					setMessages(nextMessages)
+					setActiveBranchId(chat?.activeBranchId ?? nextBranchId)
+				} catch {
+				}
+			} catch (error) {
+				setIsStreaming(false)
+				setMessages((prev: UIMessage[]) => prev.slice(0, -1))
+				toast.error(toApiErrorPayload(error).error)
+			}
+		},
+		[
+			activeBranchId,
+			canWebSearch,
+			chatId,
+			isStreaming,
+			isTemporary,
+			messages,
+			model,
+			refreshMessageBranches,
+			setActiveBranchId,
+			setIsStreaming,
+			setMessages,
+			webSearch,
+		],
+	)
+
 	useEffect(() => {
 		if (!isMobile) return
 		if (!chatId) return
@@ -570,21 +735,13 @@ export function ChatMessages({
 											{message.role === 'assistant' && (
 												<Actions className="mt-2">
 													<Action
-														onClick={() =>
-															regenerate({
-																body: {
-																	model,
-																	webSearch,
-																	chatId,
-																},
-															})
-														}
+														onClick={() => void handleRetryAssistant(messageIndex)}
 														tooltip={t('retry')}
 														label="Retry"
 													>
 														<Icon
 															icon={ReloadIcon}
-															className="size-4"
+															className="size-[18px]"
 														/>
 													</Action>
 													<Action
@@ -600,7 +757,7 @@ export function ChatMessages({
 													>
 														<Icon
 															icon={Copy01Icon}
-															className="size-4"
+															className="size-[18px]"
 														/>
 													</Action>
 													{message.parts?.some((p: any) => p.type === 'file') && (
@@ -617,7 +774,7 @@ export function ChatMessages({
 															tooltip="Download"
 															label="Download"
 														>
-															<Icon icon={Download01Icon} className="size-4" />
+															<Icon icon={Download01Icon} className="size-[18px]" />
 														</Action>
 													)}
 												</Actions>
@@ -660,7 +817,7 @@ export function ChatMessages({
 															>
 																<Icon
 																	icon={Edit03Icon}
-																	className="size-4"
+																	className="size-[18px]"
 																/>
 															</Action>
 															<Action
@@ -672,7 +829,7 @@ export function ChatMessages({
 															>
 																<Icon
 																	icon={Copy01Icon}
-																	className="size-4"
+																	className="size-[18px]"
 																/>
 															</Action>
 															{message.parts?.some((p: any) => p.type === 'file') && (
@@ -689,7 +846,7 @@ export function ChatMessages({
 																	tooltip="Download"
 																	label="Download"
 																>
-																	<Icon icon={Download01Icon} className="size-4" />
+																	<Icon icon={Download01Icon} className="size-[18px]" />
 																</Action>
 															)}
 															{chatId &&
@@ -725,7 +882,7 @@ export function ChatMessages({
 																					>
 																						<Icon
 																							icon={ArrowLeft02Icon}
-																							className="size-4"
+																							className="size-[18px]"
 																						/>
 																					</button>
 																				</TooltipTrigger>
@@ -764,7 +921,7 @@ export function ChatMessages({
 																					>
 																						<Icon
 																							icon={ArrowRight02Icon}
-																							className="size-4"
+																							className="size-[18px]"
 																						/>
 																					</button>
 																				</TooltipTrigger>

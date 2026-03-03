@@ -283,7 +283,7 @@ export function NavChatHistory({
                             showOnHover
                             className="group-hover/chat-item:bg-sidebar-accent group-hover/chat-item:text-sidebar-accent-foreground"
                           >
-                            <Icon icon={MoreHorizontalIcon} className='cursor-pointer size-5' />
+                            <Icon icon={MoreHorizontalIcon} className='cursor-pointer size-[18px]' />
                           </SidebarMenuAction>
                         </TooltipTrigger>
                       </DropdownMenuTrigger>

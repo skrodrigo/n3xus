@@ -292,9 +292,9 @@ export const SpeechInput = ({
         onClick={toggleListening}
         {...props}
       >
-        {isProcessing && <Icon icon={Loading03Icon} className="size-4 animate-spin" />}
-        {!isProcessing && isListening && <Icon icon={StopIcon} className="size-4" />}
-        {!(isProcessing || isListening) && <Icon icon={Microphone} className="size-4" />}
+        {isProcessing && <Icon icon={Loading03Icon} className="size-[18px] animate-spin" />}
+        {!isProcessing && isListening && <Icon icon={StopIcon} className="size-[18px]" />}
+        {!(isProcessing || isListening) && <Icon icon={Microphone} className="size-[18px]" />}
       </Button>
     </div>
   );

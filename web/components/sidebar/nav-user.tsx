@@ -369,8 +369,8 @@ export function NavUser({
           }
         >
           {isMobile && (
-            <DrawerClose className="ring-offset-background cursor-pointer focus:ring-ring data-[state=open]:bg-accent data-[state=open]:text-muted-foreground absolute bg-muted border-t rounded-full p-2 top-2 right-2 hover:bg-muted/80 transition-opacity hover:opacity-100 focus:ring-[0.5px] focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4">
-              <Icon icon={Cancel01Icon} className="size-5" />
+            <DrawerClose className="ring-offset-background cursor-pointer focus:ring-ring data-[state=open]:bg-accent data-[state=open]:text-muted-foreground absolute bg-muted border-t rounded-full p-2 top-2 right-2 hover:bg-muted/80 transition-opacity hover:opacity-100 focus:ring-[0.5px] focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-[18px]">
+              <Icon icon={Cancel01Icon} className="size-[18px]" />
             </DrawerClose>
           )}
           <Header>

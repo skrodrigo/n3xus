@@ -63,7 +63,7 @@ export const CommitHash = ({
   ...props
 }: CommitHashProps) => (
   <span className={cn("font-mono text-xs", className)} {...props}>
-    <Icon icon={GitCommitIcon} className="mr-1 inline-block size-4" />
+    <Icon icon={GitCommitIcon} className="mr-1 inline-block size-[18px]" />
     {children}
   </span>
 );
@@ -356,7 +356,7 @@ export const CommitFileIcon = ({
 }: CommitFileIconProps) => (
   <Icon
     icon={File01Icon}
-    className={cn("size-4.5 shrink-0 text-muted-foreground", className)}
+    className={cn("size-[18px].5 shrink-0 text-muted-foreground", className)}
   />
 );
 
@@ -411,7 +411,7 @@ export const CommitFileAdditions = ({
     >
       {children ?? (
         <>
-          <Icon icon={PlusSignIcon} className="inline-block size-4" />
+          <Icon icon={PlusSignIcon} className="inline-block size-[18px]" />
           {count}
         </>
       )}
@@ -440,7 +440,7 @@ export const CommitFileDeletions = ({
     >
       {children ?? (
         <>
-          <Icon icon={MinusSignIcon} className="inline-block size-4" />
+          <Icon icon={MinusSignIcon} className="inline-block size-[18px]" />
           {count}
         </>
       )}

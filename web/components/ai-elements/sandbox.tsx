@@ -51,11 +51,11 @@ export const SandboxHeader = ({
     {...props}
   >
     <div className="flex items-center gap-2">
-      <Icon icon={CodeIcon} className="size-4 text-muted-foreground" />
+      <Icon icon={CodeIcon} className="size-[18px] text-muted-foreground" />
       <span className="font-medium text-sm">{title}</span>
       {getStatusBadge(state)}
     </div>
-    <Icon icon={ArrowDown01Icon} className="size-4 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" />
+    <Icon icon={ArrowDown01Icon} className="size-[18px] text-muted-foreground transition-transform group-data-[state=open]:rotate-180" />
   </CollapsibleTrigger>
 );
 

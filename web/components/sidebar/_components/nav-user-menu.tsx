@@ -85,7 +85,7 @@ export function NavUserMenu({
 									{user.email}
 								</span>
 							</div>
-							<Icon icon={MoreHorizontalIcon} className="ml-auto size-4" />
+							<Icon icon={MoreHorizontalIcon} className="ml-auto size-[18px]" />
 						</SidebarMenuButton>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent
@@ -94,25 +94,6 @@ export function NavUserMenu({
 						align="end"
 						sideOffset={4}
 					>
-						<DropdownMenuLabel className="p-0 font-normal">
-							<div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-								<Avatar className="size-8 rounded-md">
-									<AvatarImage src={user.avatar} alt={user.name} />
-									<AvatarFallback className="rounded-md">
-										{initials}
-									</AvatarFallback>
-								</Avatar>
-								<div className="grid flex-1 text-left text-sm leading-tight">
-									<span className="truncate font-medium text-foreground/80">
-										{user.name}
-									</span>
-									<span className="truncate text-xs text-foreground/40">
-										{user.email}
-									</span>
-								</div>
-							</div>
-						</DropdownMenuLabel>
-						<DropdownMenuSeparator />
 						<DropdownMenuItem onClick={() => openSettings('account')}>
 							<Icon icon={UserIcon} />
 							{t('settings.account')}
@@ -136,7 +117,7 @@ export function NavUserMenu({
 							>
 								<div className="flex w-full items-center justify-between gap-3">
 									<span className="text-xs text-muted-foreground">{t('settings.theme')}</span>
-									<div className="relative h-8 w-[92px] overflow-hidden rounded-full border border-border">
+									<div className="relative h-8 w-[92px] overflow-hidden rounded-full border border-muted-foreground/20 ">
 										<div className="absolute inset-0 pointer-events-none">
 											<div
 												className="h-full w-1/3 flex items-center justify-center transition-transform duration-300"
@@ -160,7 +141,7 @@ export function NavUserMenu({
 											>
 												<Icon
 													icon={LaptopPhoneSyncIcon}
-													className="size-4"
+													className="size-[18px]"
 												/>
 											</button>
 											<button
@@ -173,7 +154,7 @@ export function NavUserMenu({
 												onClick={() => setTheme('light')}
 												aria-label="Theme: light"
 											>
-												<Icon icon={Sun02Icon} className="size-4" />
+												<Icon icon={Sun02Icon} className="size-[18px]" />
 											</button>
 											<button
 												type="button"
@@ -185,7 +166,7 @@ export function NavUserMenu({
 												onClick={() => setTheme('dark')}
 												aria-label="Theme: dark"
 											>
-												<Icon icon={Moon02Icon} className="size-4" />
+												<Icon icon={Moon02Icon} className="size-[18px]" />
 											</button>
 										</div>
 									</div>

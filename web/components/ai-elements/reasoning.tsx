@@ -136,7 +136,7 @@ export const ReasoningTrigger = memo(
       >
         {children ?? (
           <>
-            <Icon icon={BrainIcon} className="size-4" />
+            <Icon icon={BrainIcon} className="size-[18px]" />
             {isStreaming || duration === 0 ? (
               <p>Thinking...</p>
             ) : (
@@ -145,7 +145,7 @@ export const ReasoningTrigger = memo(
             <Icon
               icon={ArrowDown01Icon}
               className={cn(
-                'size-4 text-muted-foreground transition-transform',
+                'size-[18px] text-muted-foreground transition-transform',
                 isOpen ? 'rotate-180' : 'rotate-0'
               )}
             />

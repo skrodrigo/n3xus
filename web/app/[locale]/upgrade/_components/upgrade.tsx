@@ -137,7 +137,7 @@ function CheckoutForm(props: {
         disabled={!stripe || props.isConfirming}
       >
         {props.isConfirming
-          ? <Icon icon={Loading03Icon} className="animate-spin size-4" />
+          ? <Icon icon={Loading03Icon} className="animate-spin size-[18px]" />
           : t('confirmPayment')}
       </Button>
     </form>
@@ -265,7 +265,7 @@ export function UpgradeCheckoutPage(props: {
       )}
       {!checkoutOptions && !hasCheckoutError && (
         <Button className="mt-6 w-full border-0 bg-transparent!" disabled variant="outline">
-          <Icon icon={Loading03Icon} className="animate-spin size-4" />
+          <Icon icon={Loading03Icon} className="animate-spin size-[18px]" />
         </Button>
       )}
       {!checkoutOptions && hasCheckoutError && (
@@ -275,7 +275,7 @@ export function UpgradeCheckoutPage(props: {
           disabled={isCreating}
         >
           {isCreating
-            ? <Icon icon={Loading03Icon} className="animate-spin size-4" />
+            ? <Icon icon={Loading03Icon} className="animate-spin size-[18px]" />
             : t('tryAgain')}
         </Button>
       )}
@@ -287,7 +287,7 @@ export function UpgradeCheckoutPage(props: {
           disabled={isOpeningPortal}
         >
           {isOpeningPortal
-            ? <Icon icon={Loading03Icon} className="animate-spin size-4" />
+            ? <Icon icon={Loading03Icon} className="animate-spin size-[18px]" />
             : t('manageSubscription')}
         </Button>
       )}
@@ -302,7 +302,7 @@ export function UpgradeCheckoutPage(props: {
         className="absolute left-4 top-4"
         onClick={goBack}
       >
-        <Icon icon={ArrowLeft01Icon} className="size-5" />
+        <Icon icon={ArrowLeft01Icon} className="size-[18px]" />
       </Button>
       <div className="min-h-[calc(100vh-2rem)] w-full grid place-items-center">
         {checkout}

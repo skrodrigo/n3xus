@@ -136,7 +136,7 @@ export const PlanTrigger = ({ className, ...props }: PlanTriggerProps) => (
       variant="ghost"
       {...props}
     >
-      <Icon icon={ArrowUpDownIcon} className="size-4" />
+      <Icon icon={ArrowUpDownIcon} className="size-[18px]" />
       <span className="sr-only">Toggle plan</span>
     </Button>
   </CollapsibleTrigger>

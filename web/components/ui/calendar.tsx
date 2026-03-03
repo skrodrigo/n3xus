@@ -86,7 +86,7 @@ function Calendar({
           "select-none font-medium",
           captionLayout === "label"
             ? "text-sm"
-            : "rounded-md pl-2 pr-1 flex items-center gap-1 text-sm h-8 [&>svg]:text-muted-foreground [&>svg]:size-4.5",
+            : "rounded-md pl-2 pr-1 flex items-center gap-1 text-sm h-8 [&>svg]:text-muted-foreground [&>svg]:size-[18px].5",
           defaultClassNames.caption_label
         ),
         table: "w-full border-collapse",
@@ -146,18 +146,18 @@ function Calendar({
         Chevron: ({ className, orientation, ...props }) => {
           if (orientation === "left") {
             return (
-              <Icon icon={ArrowLeft01Icon} className={cn("size-4", className)} {...props} />
+              <Icon icon={ArrowLeft01Icon} className={cn("size-[18px]", className)} {...props} />
             )
           }
 
           if (orientation === "right") {
             return (
-              <Icon icon={ArrowRight01Icon} className={cn("size-4", className)} {...props} />
+              <Icon icon={ArrowRight01Icon} className={cn("size-[18px]", className)} {...props} />
             )
           }
 
           return (
-            <Icon icon={ArrowDown01Icon} className={cn("size-4", className)} {...props} />
+            <Icon icon={ArrowDown01Icon} className={cn("size-[18px]", className)} {...props} />
           )
         },
         DayButton: CalendarDayButton,

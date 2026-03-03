@@ -151,7 +151,7 @@ export function NavUserAccountSection({
 							disabled={isLoading}
 							className="shrink-0"
 						>
-							<Icon icon={ArrowRight01Icon} className="size-4" />
+							<Icon icon={ArrowRight01Icon} className="size-[18px]" />
 						</Button>
 					</div>
 				</div>
@@ -171,7 +171,7 @@ export function NavUserAccountSection({
 							disabled={isLoading}
 							className="shrink-0"
 						>
-							<Icon icon={ArrowRight01Icon} className="size-4" />
+							<Icon icon={ArrowRight01Icon} className="size-[18px]" />
 						</Button>
 					</div>
 				</div>

@@ -74,7 +74,7 @@ export function UpgradePlanPage(props: {
 				className="absolute left-4 top-4"
 				onClick={goBack}
 			>
-				<Icon icon={ArrowLeft01Icon} className="size-5" />
+				<Icon icon={ArrowLeft01Icon} className="size-[18px]" />
 			</Button>
 
 			<div className="min-h-[calc(100vh-2rem)] w-full grid place-items-center">
@@ -161,7 +161,7 @@ export function UpgradePlanPage(props: {
 							className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
 							onClick={() => setShowCouponInput(!showCouponInput)}
 						>
-							<Icon icon={CouponPercentIcon} className="size-4" />
+							<Icon icon={CouponPercentIcon} className="size-[18px]" />
 							{showCouponInput ? t('noCoupon') : `${t('haveCoupon')} ?`}
 						</button>
 
@@ -209,7 +209,7 @@ export function UpgradePlanPage(props: {
 								)}
 								{validatedCoupon && (
 									<div className="flex items-center gap-2 text-sm text-green-600">
-										<Icon icon={CouponPercentIcon} className="size-4" />
+										<Icon icon={CouponPercentIcon} className="size-[18px]" />
 										<span>
 											{validatedCoupon.percentOff
 												? `${validatedCoupon.percentOff}% off ${t('couponApplied')}`

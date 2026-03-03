@@ -25,7 +25,7 @@ export function ArtifactPanel({ artifact, isOpen, onClose }: ArtifactPanelProps)
 						onClick={onClose}
 						className="p-1.5 hover:bg-muted rounded-md transition-colors shrink-0"
 					>
-						<Icon icon={Cancel01Icon} className="size-5" />
+						<Icon icon={Cancel01Icon} className="size-[18px]" />
 					</button>
 				</div>
 				<div className="flex-1 overflow-y-auto p-4">

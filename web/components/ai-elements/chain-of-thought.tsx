@@ -92,14 +92,14 @@ export const ChainOfThoughtHeader = memo(
           )}
           {...props}
         >
-          <Icon icon={BrainIcon} className="size-4" />
+          <Icon icon={BrainIcon} className="size-[18px]" />
           <span className="flex-1 text-left">
             {children ?? "Chain of Thought"}
           </span>
           <Icon
             icon={ArrowDown01Icon}
             className={cn(
-              "size-4 transition-transform",
+              "size-[18px] transition-transform",
               isOpen ? "rotate-180" : "rotate-0"
             )}
           />
@@ -143,7 +143,7 @@ export const ChainOfThoughtStep = memo(
         {...props}
       >
         <div className="relative mt-0.5">
-          <Icon icon={IconEl} className="size-4" />
+          <Icon icon={IconEl} className="size-[18px]" />
           <div className="absolute top-7 bottom-0 left-1/2 -mx-px w-px bg-border" />
         </div>
         <div className="flex-1 space-y-2 overflow-hidden">

@@ -102,7 +102,7 @@ export const TestResultsSummary = ({
             className="gap-1 bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
             variant="secondary"
           >
-            <Icon icon={Tick02Icon} className="size-4" />
+            <Icon icon={Tick02Icon} className="size-[18px]" />
             {summary.passed} passed
           </Badge>
           {summary.failed > 0 && (
@@ -110,7 +110,7 @@ export const TestResultsSummary = ({
               className="gap-1 bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
               variant="secondary"
             >
-              <Icon icon={Cancel01Icon} className="size-4" />
+              <Icon icon={Cancel01Icon} className="size-[18px]" />
               {summary.failed} failed
             </Badge>
           )}
@@ -119,7 +119,7 @@ export const TestResultsSummary = ({
               className="gap-1 bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400"
               variant="secondary"
             >
-              <Icon icon={CircleIcon} className="size-4" />
+              <Icon icon={CircleIcon} className="size-[18px]" />
               {summary.skipped} skipped
             </Badge>
           )}
@@ -256,7 +256,7 @@ export const TestSuiteName = ({
       )}
       {...props}
     >
-      <Icon icon={ArrowRight01Icon} className="size-4 shrink-0 text-muted-foreground transition-transform group-data-[state=open]:rotate-90" />
+      <Icon icon={ArrowRight01Icon} className="size-[18px] shrink-0 text-muted-foreground transition-transform group-data-[state=open]:rotate-90" />
       <TestStatusIcon status={status} />
       <span className="font-medium text-sm">{children ?? name}</span>
     </CollapsibleTrigger>
@@ -364,10 +364,10 @@ const statusStyles: Record<TestStatus, string> = {
 };
 
 const statusIcons: Record<TestStatus, React.ReactNode> = {
-  passed: <Icon icon={Tick02Icon} className="size-4" />,
-  failed: <Icon icon={Cancel01Icon} className="size-4" />,
-  skipped: <Icon icon={CircleIcon} className="size-4" />,
-  running: <Icon icon={CircleIcon} className="size-4 animate-pulse" />,
+  passed: <Icon icon={Tick02Icon} className="size-[18px]" />,
+  failed: <Icon icon={Cancel01Icon} className="size-[18px]" />,
+  skipped: <Icon icon={CircleIcon} className="size-[18px]" />,
+  running: <Icon icon={CircleIcon} className="size-[18px] animate-pulse" />,
 };
 
 const TestStatusIcon = ({ status }: { status: TestStatus }) => (

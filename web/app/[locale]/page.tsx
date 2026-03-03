@@ -145,7 +145,7 @@ export default function HomePage() {
                             data={attachment}
                             onRemove={() => handleRemoveAttachment(attachment.id)}
                           >
-                            <AttachmentPreview className="size-5 rounded bg-background" />
+                            <AttachmentPreview className="size-[18px] rounded bg-background" />
                             <AttachmentInfo className="pr-6" />
                             <AttachmentRemove className="absolute right-1 dark:hover:bg-transparent hover:bg-transparent" label={t('remove')} />
                           </Attachment>

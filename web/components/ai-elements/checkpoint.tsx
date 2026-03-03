@@ -38,7 +38,7 @@ export const CheckpointIcon = ({
   children,
 }: CheckpointIconProps) =>
   children ?? (
-    <Icon icon={Bookmark01Icon} className={cn("size-4 shrink-0", className)} />
+    <Icon icon={Bookmark01Icon} className={cn("size-[18px] shrink-0", className)} />
   );
 
 export type CheckpointTriggerProps = ComponentProps<typeof Button> & {

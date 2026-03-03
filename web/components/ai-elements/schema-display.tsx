@@ -217,7 +217,7 @@ export const SchemaDisplayParameters = ({
   return (
     <Collapsible className={cn(className)} defaultOpen {...props}>
       <CollapsibleTrigger className="group flex w-full items-center gap-2 px-4 py-3 text-left transition-colors hover:bg-muted/50">
-        <Icon icon={ArrowRight01Icon} className="size-4 shrink-0 text-muted-foreground transition-transform group-data-[state=open]:rotate-90" />
+        <Icon icon={ArrowRight01Icon} className="size-[18px] shrink-0 text-muted-foreground transition-transform group-data-[state=open]:rotate-90" />
         <span className="font-medium text-sm">Parameters</span>
         <Badge className="ml-auto text-xs" variant="secondary">
           {parameters?.length}
@@ -285,7 +285,7 @@ export const SchemaDisplayRequest = ({
   return (
     <Collapsible className={cn(className)} defaultOpen {...props}>
       <CollapsibleTrigger className="group flex w-full items-center gap-2 px-4 py-3 text-left transition-colors hover:bg-muted/50">
-        <Icon icon={ArrowRight01Icon} className="size-4 shrink-0 text-muted-foreground transition-transform group-data-[state=open]:rotate-90" />
+        <Icon icon={ArrowRight01Icon} className="size-[18px] shrink-0 text-muted-foreground transition-transform group-data-[state=open]:rotate-90" />
         <span className="font-medium text-sm">Request Body</span>
       </CollapsibleTrigger>
       <CollapsibleContent>
@@ -312,7 +312,7 @@ export const SchemaDisplayResponse = ({
   return (
     <Collapsible className={cn(className)} defaultOpen {...props}>
       <CollapsibleTrigger className="group flex w-full items-center gap-2 px-4 py-3 text-left transition-colors hover:bg-muted/50">
-        <Icon icon={ArrowRight01Icon} className="size-4 shrink-0 text-muted-foreground transition-transform group-data-[state=open]:rotate-90" />
+        <Icon icon={ArrowRight01Icon} className="size-[18px] shrink-0 text-muted-foreground transition-transform group-data-[state=open]:rotate-90" />
         <span className="font-medium text-sm">Response</span>
       </CollapsibleTrigger>
       <CollapsibleContent>
@@ -368,7 +368,7 @@ export const SchemaDisplayProperty = ({
           )}
           style={{ paddingLeft }}
         >
-          <Icon icon={ArrowRight01Icon} className="size-4 shrink-0 text-muted-foreground transition-transform group-data-[state=open]:rotate-90" />
+          <Icon icon={ArrowRight01Icon} className="size-[18px] shrink-0 text-muted-foreground transition-transform group-data-[state=open]:rotate-90" />
           <span className="font-mono text-sm">{name}</span>
           <Badge className="text-xs" variant="outline">
             {type}
@@ -419,7 +419,7 @@ export const SchemaDisplayProperty = ({
       {...props}
     >
       <div className="flex items-center gap-2">
-        <span className="size-4" /> {/* Spacer for alignment */}
+        <span className="size-[18px]" /> {/* Spacer for alignment */}
         <span className="font-mono text-sm">{name}</span>
         <Badge className="text-xs" variant="outline">
           {type}

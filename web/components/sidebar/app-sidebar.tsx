@@ -7,6 +7,8 @@ import {
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
+  SidebarTrigger,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import Image from "next/image";
 import { NavChatHistory } from "../chat/nav-chat-history";
@@ -30,6 +32,7 @@ export default function AppSidebar({ chats: initialChats, ...props }: AppSidebar
   const [user, setUser] = useState<{ name: string; email: string; avatar: string } | null>(null);
   const t = useTranslations()
   const locale = useLocale()
+  const { state } = useSidebar()
 
   useEffect(() => {
     const refresh = () => {
@@ -65,7 +68,7 @@ export default function AppSidebar({ chats: initialChats, ...props }: AppSidebar
       <div className="rounded-md">
         <Sidebar variant="floating" {...props}>
           <SidebarHeader >
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 justify-between w-full">
               <Image
                 src="/logos/pumkin-black.svg"
                 alt="Logo"
@@ -84,6 +87,7 @@ export default function AppSidebar({ chats: initialChats, ...props }: AppSidebar
                 quality={100}
                 className="m-2 hidden dark:block"
               />
+              {state !== 'collapsed' ? <SidebarTrigger /> : null}
             </div>
             <div className="mt-2 flex w-full flex-col">
               <Link href={locale === 'pt' ? '/chat' : `/${locale}/chat`} className="flex-1">

@@ -322,6 +322,10 @@ function SidebarTrigger({
           <button
             data-sidebar="trigger"
             data-slot="sidebar-trigger"
+            className={cn(
+              'inline-flex size-8 items-center justify-center rounded-full hover:bg-sidebar-accent active:bg-sidebar-accent',
+              className,
+            )}
             onClick={(event) => {
               onClick?.(event)
               toggleSidebar()
@@ -330,7 +334,7 @@ function SidebarTrigger({
           >
             <Icon
               icon={isMobile ? MenuTwoLineIcon : PanelLeftIcon}
-              className={isMobile ? 'size-6' : 'size-5'}
+              className={isMobile ? 'size-6' : 'size-5  text-muted-foreground!'}
             />
           </button>
         </TooltipTrigger>

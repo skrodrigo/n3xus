@@ -43,6 +43,7 @@ import { modelSupportsWebSearch } from '@/data/model-capabilities';
 import { subscriptionService } from '@/data/subscription';
 import { useArtifacts } from '@/hooks/use-artifacts';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useSidebar } from '@/components/ui/sidebar';
 import { UIMessage, useChat } from '@ai-sdk/react';
 import { Archive03Icon, Cancel01Icon, Delete02Icon, Edit03Icon, GiftIcon, BubbleChatAddIcon, BubbleChatTemporaryIcon, MoreHorizontalIcon, PinIcon, PinOffIcon, Share03Icon } from '@hugeicons/core-free-icons';
 import { nanoid } from 'nanoid';
@@ -251,6 +252,7 @@ export function Chat({
   })
 
   const isMobile = useIsMobile()
+  const { state: sidebarState } = useSidebar()
 
   useEffect(() => {
     if (typeof window === 'undefined') return
@@ -778,7 +780,7 @@ export function Chat({
         <>
           <div className="relative flex flex-col h-full w-full overflow-x-hidden ">
             <div className="absolute top-0 left-0 right-0 py-1 flex items-center gap-2 z-20 bg-background">
-              <SidebarTrigger />
+              {sidebarState === 'collapsed' ? <SidebarTrigger /> : null}
               <PromptInputModelSelect
                 onValueChange={applySelectedModel}
                 value={modelTab === 'text' ? model : imageModel}
@@ -1129,7 +1131,7 @@ export function Chat({
           <ResizablePanel defaultSize={isPanelOpen ? 60 : 100} id="chat-panel">
             <div className="relative flex flex-col h-full w-full overflow-x-hidden">
               <div className="absolute top-0 left-0 right-0 py-1 flex items-center gap-2 z-20 bg-background px-2">
-                <SidebarTrigger />
+                {sidebarState === 'collapsed' ? <SidebarTrigger /> : null}
                 <PromptInputModelSelect
                   onValueChange={applySelectedModel}
                   value={modelTab === 'text' ? model : imageModel}

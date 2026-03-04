@@ -272,45 +272,40 @@ function SidebarTrigger({
           data-sidebar="trigger"
           data-slot="sidebar-trigger"
           className={cn(
-            ' gap-1 rounded-full border-t border-b border-border/60 bg-accent p-1',
+            'gap-1 rounded-full border-t border-b border-border/60 bg-accent p-1 flex items-center justify-center',
             className
           )}
         >
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button
-                  className="size-7 dark:hover:bg-transparent  rounded-full bg-transparent"
+                <button
                   onClick={(event) => {
                     onClick?.(event)
                     toggleSidebar()
                   }}
-                  size="icon"
-                  type="button"
-                  variant="ghost"
                   {...props}
+                  className="ml-2"
                 >
                   <Icon
                     icon={isMobile ? MenuTwoLineIcon : PanelLeftIcon}
-                    className={isMobile ? 'size-[18px]' : 'size-[18px]'}
+                    className={isMobile ? 'size-6' : 'size-5'}
                   />
-                </Button>
+                </button>
               </TooltipTrigger>
               <TooltipContent sideOffset={6}>{t('sidebar.toggleSidebar')}</TooltipContent>
             </Tooltip>
 
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button
-                  asChild
+                <button
                   className="h-7 dark:hover:bg-transparent rounded-full px-3 font-medium"
                   type="button"
-                  variant="ghost"
                 >
                   <Link href={locale === 'pt' ? '/chat' : `/${locale}/chat`}>
-                    <Icon icon={AddCircleIcon} />
+                    <Icon icon={AddCircleIcon} className="size-6 md:size-5" />
                   </Link>
-                </Button>
+                </button>
               </TooltipTrigger>
               <TooltipContent sideOffset={6}>{t('sidebar.newChat')}</TooltipContent>
             </Tooltip>
@@ -324,12 +319,9 @@ function SidebarTrigger({
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <Button
+          <button
             data-sidebar="trigger"
             data-slot="sidebar-trigger"
-            variant="ghost"
-            size="icon"
-            className={cn("size-7 bg-transparent", className)}
             onClick={(event) => {
               onClick?.(event)
               toggleSidebar()
@@ -338,9 +330,9 @@ function SidebarTrigger({
           >
             <Icon
               icon={isMobile ? MenuTwoLineIcon : PanelLeftIcon}
-              className={isMobile ? 'size-[18px]' : 'size-[18px]'}
+              className={isMobile ? 'size-6' : 'size-5'}
             />
-          </Button>
+          </button>
         </TooltipTrigger>
         <TooltipContent sideOffset={6}>{t('sidebar.toggleSidebar')}</TooltipContent>
       </Tooltip>

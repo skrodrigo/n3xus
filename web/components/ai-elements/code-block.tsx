@@ -38,14 +38,14 @@ export const CodeBlock = ({
   <CodeBlockContext.Provider value={{ code }}>
     <div
       className={cn(
-        'relative w-full overflow-hidden rounded-md border-border/70 border-t border-b bg-accent text-foreground',
+        'relative w-full max-w-full min-w-0 overflow-hidden rounded-md border-border/70 border-t border-b bg-accent text-foreground',
         className
       )}
       {...props}
     >
-      <div className="relative">
+      <div className="relative max-w-full min-w-0">
         <SyntaxHighlighter
-          className="overflow-hidden dark:hidden"
+          className="max-w-full overflow-x-auto overflow-y-hidden overscroll-x-contain touch-pan-x dark:hidden"
           codeTagProps={{
             className: 'font-mono text-sm',
           }}
@@ -55,6 +55,7 @@ export const CodeBlock = ({
             fontSize: '0.875rem',
             background: 'hsl(var(--background))',
             color: 'hsl(var(--foreground))',
+            overflowX: 'auto',
           }}
           language={language}
           lineNumberStyle={{
@@ -68,7 +69,7 @@ export const CodeBlock = ({
           {code}
         </SyntaxHighlighter>
         <SyntaxHighlighter
-          className="hidden overflow-hidden dark:block"
+          className="hidden max-w-full overflow-x-auto overflow-y-hidden overscroll-x-contain touch-pan-x dark:block"
           codeTagProps={{
             className: 'font-mono text-sm',
           }}
@@ -78,6 +79,7 @@ export const CodeBlock = ({
             fontSize: '0.875rem',
             background: 'hsl(var(--background))',
             color: 'hsl(var(--foreground))',
+            overflowX: 'auto',
           }}
           language={language}
           lineNumberStyle={{

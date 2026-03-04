@@ -35,7 +35,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { toApiErrorPayload } from '@/data/api-error';
-import { artifactService, type Artifact } from '@/data/artifacts';
+import { type Artifact } from '@/data/artifacts';
 import { chatService } from '@/data/chat';
 import { chatsService } from '@/data/chats';
 import { imagesService } from '@/data/images';
@@ -44,7 +44,7 @@ import { subscriptionService } from '@/data/subscription';
 import { useArtifacts } from '@/hooks/use-artifacts';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { UIMessage, useChat } from '@ai-sdk/react';
-import { Archive03Icon, Cancel01Icon, Delete02Icon, Edit03Icon, GiftIcon, BubbleChatIcon, BubbleChatTemporaryIcon, MoreHorizontalIcon, PinIcon, PinOffIcon, Share03Icon } from '@hugeicons/core-free-icons';
+import { Archive03Icon, Cancel01Icon, Delete02Icon, Edit03Icon, GiftIcon, BubbleChatAddIcon, BubbleChatTemporaryIcon, MoreHorizontalIcon, PinIcon, PinOffIcon, Share03Icon } from '@hugeicons/core-free-icons';
 import { nanoid } from 'nanoid';
 import { useTranslations } from 'next-intl';
 import NextImage from 'next/image';
@@ -846,15 +846,10 @@ export function Chat({
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="size-8"
-                            onClick={handleShare}
-                            disabled={isPending}
-                          >
-                            <Icon icon={Share03Icon} className="size-[18px] md:size-[18px]" />
-                          </Button>
+                          <button type="button" onClick={handleShare}
+                            disabled={isPending}>
+                            <Icon icon={Share03Icon} className="size-5 mr-1" />
+                          </button>
                         </TooltipTrigger>
                         <TooltipContent side="bottom" sideOffset={6}>
                           {t('share')}
@@ -866,9 +861,9 @@ export function Chat({
                         <Tooltip>
                           <DropdownMenuTrigger asChild>
                             <TooltipTrigger asChild>
-                              <Button variant="ghost" size="icon" className="size-8">
-                                <Icon icon={MoreHorizontalIcon} className="size-[18px] md:size-[18px]" />
-                              </Button>
+                              <button type="button">
+                                <Icon icon={MoreHorizontalIcon} className="size-6" />
+                              </button>
                             </TooltipTrigger>
                           </DropdownMenuTrigger>
                           <TooltipContent side="bottom" sideOffset={6}>{t('moreOptions')}</TooltipContent>
@@ -920,20 +915,16 @@ export function Chat({
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="size-8"
+                        <button
                           onClick={handleTemporaryChat}
                           title={isTemporary ? t('returnToNormalChat') : t('temporaryChat')}
                         >
                           {isTemporary ? (
-                            <Icon icon={BubbleChatTemporaryIcon} />
+                            <Icon icon={BubbleChatTemporaryIcon} className='size-6' />
                           ) : (
-                            <Icon icon={BubbleChatIcon} />
+                            <Icon icon={BubbleChatAddIcon} className='size-6' />
                           )}
-                          <span className="sr-only">{isTemporary ? t('returnToNormalChat') : t('temporaryChat')}</span>
-                        </Button>
+                        </button>
                       </TooltipTrigger>
                       <TooltipContent sideOffset={6}>
                         {isTemporary ? t('returnToNormalChat') : t('temporaryChat')}
@@ -1017,7 +1008,7 @@ export function Chat({
               )}
             </SidebarInset>
             {!isNewChat && (
-              <div className="shrink-0 px-4 pb-4 bg-background">
+              <div className="shrink-0 pb-4 bg-background">
                 <div className="rounded-md w-full max-w-3xl mx-auto">
                   <AttachmentsInline
                     attachments={attachments}
@@ -1206,15 +1197,10 @@ export function Chat({
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="size-8"
-                              onClick={handleShare}
-                              disabled={isPending}
-                            >
-                              <Icon icon={Share03Icon} className="size-[18px] md:size-[18px]" />
-                            </Button>
+                            <button type="button" onClick={handleShare}
+                              disabled={isPending}>
+                              <Icon icon={Share03Icon} className="size-6 md:size-5 mr-1" />
+                            </button>
                           </TooltipTrigger>
                           <TooltipContent side="bottom" sideOffset={6}>
                             {t('share')}
@@ -1226,9 +1212,9 @@ export function Chat({
                           <Tooltip>
                             <DropdownMenuTrigger asChild>
                               <TooltipTrigger asChild>
-                                <Button variant="ghost" size="icon" className="size-8">
+                                <button type="button" className="size-8">
                                   <Icon icon={MoreHorizontalIcon} className="size-[18px] md:size-[18px]" />
-                                </Button>
+                                </button>
                               </TooltipTrigger>
                             </DropdownMenuTrigger>
                             <TooltipContent side="bottom" sideOffset={6}>{t('moreOptions')}</TooltipContent>
@@ -1290,7 +1276,7 @@ export function Chat({
                             {isTemporary ? (
                               <Icon icon={BubbleChatTemporaryIcon} className="size-[18px] md:size-[18px]" />
                             ) : (
-                              <Icon icon={BubbleChatIcon} className="size-[18px] md:size-[18px]" />
+                              <Icon icon={BubbleChatAddIcon} className="size-[18px] md:size-[18px]" />
                             )}
                             <span className="sr-only">{isTemporary ? t('returnToNormalChat') : t('temporaryChat')}</span>
                           </Button>
@@ -1377,7 +1363,7 @@ export function Chat({
                 )}
               </SidebarInset>
               {!isNewChat && (
-                <div className="shrink-0 px-4 pb-4 bg-background">
+                <div className="shrink-0 pb-4 bg-background">
                   <div className="rounded-md w-full max-w-3xl mx-auto">
                     <AttachmentsInline
                       attachments={attachments}

@@ -639,28 +639,6 @@ export function Chat({
             ? [...chat.messages].reverse().find((m: any) => m?.role === 'assistant')
             : null
 
-          if (
-            !isTemporary &&
-            accumulatedText.trim() &&
-            (typeof assistantMessageIdFromServer === 'string' || typeof lastAssistant?.id === 'string')
-          ) {
-            const targetAssistantMessageId =
-              typeof assistantMessageIdFromServer === 'string'
-                ? assistantMessageIdFromServer
-                : lastAssistant.id
-
-            artifactService.queueArtifactProcessing({
-              chatId: finalChatId,
-              messageId: targetAssistantMessageId,
-              userMessage: trimmedInput,
-            }).catch((err: unknown) => {
-              console.error('Failed to queue artifact:', err)
-            })
-
-            if (typeof window !== 'undefined') {
-              window.dispatchEvent(new Event('artifacts:refresh'))
-            }
-          }
         } catch {
         }
       }

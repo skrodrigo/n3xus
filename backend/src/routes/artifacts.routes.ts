@@ -49,6 +49,10 @@ artifactsRouter.post('/process', async (c) => {
 
 	const { chatId, messageId, userMessage, title } = parsedRequest.data
 
+	if (!title) {
+		return c.json({ success: true, skipped: true })
+	}
+
 	console.log('[artifact-process] Received request:', { chatId, messageId, userMessageLength: userMessage?.length })
 
 	try {
@@ -84,7 +88,7 @@ artifactsRouter.post('/process', async (c) => {
 			throw lastError || new Error('Failed to generate content')
 		}
 
-		const artifactTitle = title || 'Artifact'
+		const artifactTitle = title
 
 		const existingArtifact = await prisma.artifact.findFirst({
 			where: { messageId },
@@ -113,19 +117,6 @@ artifactsRouter.post('/process', async (c) => {
 			message: error?.message,
 			stack: error?.stack,
 			name: error?.name,
-		})
-
-		await prisma.artifact.create({
-			data: {
-				chatId,
-				messageId,
-				title: title || 'Artifact',
-				content: {
-					error: 'Failed to generate artifact',
-					details: error?.message,
-				},
-				status: 'failed',
-			},
 		})
 
 		return c.json({ error: 'Failed to process artifact', details: error?.message }, 500)

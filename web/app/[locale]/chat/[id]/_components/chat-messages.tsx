@@ -451,9 +451,9 @@ export function ChatMessages({
 	}, [chatId, ensureMessageBranchesLoaded, isMobile, messages])
 
 	return (
-		<div className="flex flex-col w-full mx-auto h-full">
+		<div className="flex flex-col w-full mx-auto h-full min-w-0">
 			<div
-				className="w-full max-w-3xl mx-auto flex-1 overflow-y-auto scrollbar-hidden"
+				className="w-full max-w-3xl mx-auto flex-1 overflow-y-auto scrollbar-hidden min-w-0"
 				style={{
 					scrollbarWidth: 'none',
 					msOverflowStyle: 'none',

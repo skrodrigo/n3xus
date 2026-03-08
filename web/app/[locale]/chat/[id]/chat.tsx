@@ -302,6 +302,7 @@ export function Chat({
   }, [chatId])
 
   const { messages, status, regenerate, setMessages } = useChat({
+    id: effectiveChatId,
     onError: (error: any) => {
       try {
         const errorBody = JSON.parse(error.message);
@@ -315,11 +316,34 @@ export function Chat({
 
   const isNewChat = !chatId && messages.length === 0
 
+  const [hasLoadedInitialMessages, setHasLoadedInitialMessages] = useState(false);
+
   useEffect(() => {
-    if (initialMessages.length) {
-      setMessages(initialMessages);
+    if (chatId && !hasLoadedInitialMessages) {
+      const mergedMessages = [...initialMessages];
+
+      messages.forEach((localMsg) => {
+        const serverMsgIndex = mergedMessages.findIndex((m) => m.id === localMsg.id);
+        const serverMsg = serverMsgIndex >= 0 ? mergedMessages[serverMsgIndex] : null;
+
+        if (!serverMsg) {
+          mergedMessages.push(localMsg);
+        } else {
+          const localPart = localMsg.parts?.find((p: any) => p.type === 'text');
+          const serverPart = serverMsg.parts?.find((p: any) => p.type === 'text');
+          const localText = localPart && 'text' in localPart ? localPart.text : '';
+          const serverText = serverPart && 'text' in serverPart ? serverPart.text : '';
+
+          if (localText.length > serverText.length) {
+            mergedMessages[serverMsgIndex] = localMsg;
+          }
+        }
+      });
+
+      setMessages(mergedMessages);
+      setHasLoadedInitialMessages(true);
     }
-  }, [initialMessages, setMessages]);
+  }, [chatId, initialMessages, setMessages, hasLoadedInitialMessages, messages]);
 
   useEffect(() => {
     setActiveBranchId(initialBranchId ?? null)
@@ -794,10 +818,10 @@ export function Chat({
   }
 
   return (
-    <div className="flex h-dvh w-full overflow-hidden p-2 md:p-0">
+    <div className="flex h-dvh w-full overflow-hidden p-2 md:p-0 overflow-x-hidden">
       {isMobile ? (
         <>
-          <div className="flex flex-col h-full w-full overflow-hidden">
+          <div className="flex flex-col h-full w-full overflow-hidden min-w-0">
             <div className="flex items-center justify-between gap-2 shrink-0 py-1 px-2 z-20 bg-background">
               <div className='flex items-center justify-center gap-2'>
                 <SidebarTrigger />
@@ -961,7 +985,7 @@ export function Chat({
                 </div>
               )}
             </div>
-            <SidebarInset className="flex-1 overflow-y-auto min-h-0 scrollbar-hidden" style={{ WebkitOverflowScrolling: 'touch' }}>
+            <SidebarInset className="flex-1 overflow-y-auto min-h-0 scrollbar-hidden min-w-0" style={{ WebkitOverflowScrolling: 'touch' }}>
               {isNewChat ? (
                 <div className="flex flex-col items-center justify-center h-full px-4">
                   <div className="w-full max-w-3xl">
@@ -1322,7 +1346,7 @@ export function Chat({
                   </div>
                 )}
               </div>
-              <SidebarInset className="flex-1 overflow-y-auto min-h-0 scrollbar-hidden" style={{ WebkitOverflowScrolling: 'touch' }}>
+              <SidebarInset className="flex-1 overflow-y-auto min-h-0 scrollbar-hidden min-w-0" style={{ WebkitOverflowScrolling: 'touch' }}>
                 {isNewChat ? (
                   <div className="flex flex-col items-center justify-center h-full px-4">
                     <div className="w-full max-w-3xl">

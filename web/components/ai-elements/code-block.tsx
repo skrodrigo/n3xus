@@ -38,60 +38,60 @@ export const CodeBlock = ({
   <CodeBlockContext.Provider value={{ code }}>
     <div
       className={cn(
-        'relative w-full max-w-full min-w-0 overflow-hidden rounded-md border-border/70 border-t border-b bg-accent text-foreground',
+        'relative w-full max-w-full min-w-0 rounded-md border-border/70 border-t border-b bg-accent text-foreground',
         className
       )}
       {...props}
     >
-      <div className="relative max-w-full min-w-0">
-        <SyntaxHighlighter
-          className="max-w-full overflow-x-auto overflow-y-hidden overscroll-x-contain touch-pan-x dark:hidden"
-          codeTagProps={{
-            className: 'font-mono text-sm',
-          }}
-          customStyle={{
-            margin: 0,
-            padding: '1rem',
-            fontSize: '0.875rem',
-            background: 'hsl(var(--background))',
-            color: 'hsl(var(--foreground))',
-            overflowX: 'auto',
-          }}
-          language={language}
-          lineNumberStyle={{
-            color: 'hsl(var(--muted-foreground))',
-            paddingRight: '1.5rem',
-            minWidth: '3rem',
-          }}
-          showLineNumbers={showLineNumbers}
-          style={oneLight}
-        >
-          {code}
-        </SyntaxHighlighter>
-        <SyntaxHighlighter
-          className="hidden max-w-full overflow-x-auto overflow-y-hidden overscroll-x-contain touch-pan-x dark:block"
-          codeTagProps={{
-            className: 'font-mono text-sm',
-          }}
-          customStyle={{
-            margin: 0,
-            padding: '1rem',
-            fontSize: '0.875rem',
-            background: 'hsl(var(--background))',
-            color: 'hsl(var(--foreground))',
-            overflowX: 'auto',
-          }}
-          language={language}
-          lineNumberStyle={{
-            color: 'hsl(var(--muted-foreground))',
-            paddingRight: '1rem',
-            minWidth: '2.5rem',
-          }}
-          showLineNumbers={showLineNumbers}
-          style={oneDark}
-        >
-          {code}
-        </SyntaxHighlighter>
+      <div className="relative w-full max-w-full min-w-0 grid">
+        <div className="overflow-x-auto max-w-full [&_pre]:min-w-0!">
+          <SyntaxHighlighter
+            className="dark:hidden"
+            codeTagProps={{
+              className: 'font-mono text-sm',
+            }}
+            customStyle={{
+              margin: 0,
+              padding: '1rem',
+              fontSize: '0.875rem',
+              background: 'hsl(var(--background))',
+              color: 'hsl(var(--foreground))',
+            }}
+            language={language}
+            lineNumberStyle={{
+              color: 'hsl(var(--muted-foreground))',
+              paddingRight: '1.5rem',
+              minWidth: '3rem',
+            }}
+            showLineNumbers={showLineNumbers}
+            style={oneLight}
+          >
+            {code}
+          </SyntaxHighlighter>
+          <SyntaxHighlighter
+            className="hidden dark:block"
+            codeTagProps={{
+              className: 'font-mono text-sm',
+            }}
+            customStyle={{
+              margin: 0,
+              padding: '1rem',
+              fontSize: '0.875rem',
+              background: 'hsl(var(--background))',
+              color: 'hsl(var(--foreground))',
+            }}
+            language={language}
+            lineNumberStyle={{
+              color: 'hsl(var(--muted-foreground))',
+              paddingRight: '1rem',
+              minWidth: '2.5rem',
+            }}
+            showLineNumbers={showLineNumbers}
+            style={oneDark}
+          >
+            {code}
+          </SyntaxHighlighter>
+        </div>
         {children && (
           <div className="absolute top-2 right-2 flex items-center gap-2">
             {children}
@@ -142,7 +142,7 @@ export const CodeBlockCopyButton = ({
       className={cn('shrink-0', className)}
       onClick={copyToClipboard}
       size="icon"
-      variant="ghost"
+      variant="secondary"
       {...props}
     >
       {children ?? <Icon icon={IconEl} size={14} />}

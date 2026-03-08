@@ -31,7 +31,7 @@ export const ConversationContent = ({
   ...props
 }: ConversationContentProps) => (
   <StickToBottom.Content
-    className={cn('px-2 py-4 mx-auto w-full max-w-3xl min-w-0', className)}
+    className={cn('px-2 py-4 mx-auto w-full max-w-3xl min-w-0 overflow-hidden', className)}
     {...props}
   />
 );

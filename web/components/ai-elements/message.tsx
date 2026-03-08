@@ -41,12 +41,12 @@ export const MessageContent = ({
       'flex flex-col gap-2 group-[.is-user]:rounded-lg group-[.is-user]:mt-8 group-[.is-user]:px-4 py-3 text-foreground text-[16px] md:text-sm',
       'group-[.is-user]:bg-muted group-[.is-user]:text-foreground',
       'group-[.is-assistant]:bg-background group-[.is-assistant]:rounded-none group-[.is-assistant]:text-foreground',
-      'min-w-0 max-w-full [&_pre]:max-w-full [&_pre]:overflow-x-auto [&_pre]:whitespace-pre [&_code]:whitespace-pre',
+      'min-w-0 max-w-full overflow-hidden',
       className
     )}
     {...props}
   >
-    <div className="is-user:dark min-w-0 w-full wrap-break-word">{children}</div>
+    <div className="min-w-0 w-full">{children}</div>
   </div>
 );
 

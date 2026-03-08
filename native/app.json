@@ -1,9 +1,9 @@
 {
   "expo": {
-    "name": "pumkin",
-    "slug": "pumkin",
+    "name": "nyxai",
+    "slug": "nyxai",
     "version": "1.0.0",
-    "scheme": "pumkin",
+    "scheme": "nyxai",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
     "icon": "./assets/icon.png",

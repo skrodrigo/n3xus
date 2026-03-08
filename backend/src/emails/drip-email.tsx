@@ -100,7 +100,7 @@ export function DripEmail(props: DripEmailProps) {
                 Importante
               </Text>
               <Text className="text-[14px] m-0 leading-[20px] text-black">
-                Se você já assinou, ignore esta mensagem — e obrigado por apoiar o Pumkin.
+                Se você já assinou, ignore esta mensagem — e obrigado por apoiar o NyxAI.
               </Text>
             </div>
           </Section>
@@ -108,7 +108,7 @@ export function DripEmail(props: DripEmailProps) {
           <Hr className="my-[32px]" style={{ borderColor: '#E5E7EB' }} />
           <Section>
             <Text className="text-[12px] m-0 text-center leading-[18px]" style={{ color: '#687385' }}>
-              © {new Date().getFullYear()} Pumkin. Todos os direitos reservados.
+              © {new Date().getFullYear()} NyxAI Todos os direitos reservados.
             </Text>
           </Section>
         </Container>

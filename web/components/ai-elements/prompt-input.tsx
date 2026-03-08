@@ -313,18 +313,18 @@ export const PromptInputSubmit = ({
   className,
   variant = 'default',
   size = 'icon',
-  status,
   children,
+  status,
   ...props
 }: PromptInputSubmitProps) => {
-  let IconEl = <Icon icon={ArrowUp02Icon} className="size-[18px] rounded-full" />;
+  let IconEl = <Icon icon={ArrowUp02Icon} className="size-[18px] rounded-full text-background" />;
 
   if (status === 'submitted') {
-    IconEl = <Icon icon={Loading03Icon} className="size-[18px] animate-spin rounded-full" />;
+    IconEl = <Icon icon={Loading03Icon} className="size-[18px] animate-spin rounded-full text-background" />;
   } else if (status === 'streaming') {
-    IconEl = <Icon icon={StopIcon} className="size-[18px] rounded-full fill-current" />;
+    IconEl = <Icon icon={StopIcon} className="size-[18px] rounded-full fill-current text-background" />;
   } else if (status === 'error') {
-    IconEl = <Icon icon={Cancel01Icon} className="size-[18px] rounded-full" />;
+    IconEl = <Icon icon={Cancel01Icon} className="size-[18px] rounded-full text-background" />;
   }
 
   return (

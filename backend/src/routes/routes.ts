@@ -46,7 +46,7 @@ app.onError((err, c) => {
   return c.json({ success: false, error: message, statusCode }, statusCode);
 });
 
-app.get('/', (c) => c.json({ message: 'pumkin API up and running!' }));
+app.get('/', (c) => c.json({ message: 'nyxai API up and running!' }));
 
 app.route('/api/auth', authRouter);
 app.route('/api/chat', chatRouter);
@@ -68,8 +68,8 @@ app.doc('/docs', {
   openapi: '3.0.0',
   info: {
     version: '1.0.0',
-    title: 'pumkin API',
-    description: 'API do pumkin',
+    title: 'nyxai API',
+    description: 'API do nyxai',
   },
   servers: [{ url: 'http://localhost:3001', description: 'Development' }],
 });

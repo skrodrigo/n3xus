@@ -147,7 +147,7 @@ export function SignUpDialog({ open, onOpenChange, onSignInClick }: SignUpDialog
       <Content className={isMobile ? 'p-0' : undefined}>
         <Title />
         <Header className="flex flex-col items-center text-center">
-          <Image src="/logos/pumkin-icon.svg" alt="Logo" width={32} height={32} className="mb-4" priority quality={100} />
+          <Image src="/logos/nyxai-white.svg" alt="Logo" width={32} height={32} className="mb-4" priority quality={100} />
           <Description>
             {step === 'otp' ? tOtp('description') : t('title')}
           </Description>
@@ -196,7 +196,8 @@ export function SignUpDialog({ open, onOpenChange, onSignInClick }: SignUpDialog
               </Button>
             )}
             <Button
-              className="w-full bg-white text-black hover:bg-white/95"
+              className="w-full hover:bg-white/95"
+              variant="outline"
               onClick={signInWithGoogle}
               disabled={isSubmitting}
             >

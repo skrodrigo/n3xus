@@ -108,7 +108,7 @@ export function NavUserMenu({
 						</DropdownMenuItem>
 						<DropdownMenuSeparator />
 						<DropdownMenuItem
-							className="cursor-default bg-transparent focus:bg-transparent data-highlighted:bg-transparent"
+							className="cursor-pointer bg-transparent focus:bg-transparent data-highlighted:bg-transparent"
 							onSelect={(e) => e.preventDefault()}
 						>
 							<div

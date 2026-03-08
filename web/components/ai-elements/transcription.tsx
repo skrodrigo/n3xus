@@ -108,7 +108,7 @@ export const TranscriptionSegment = ({
         isPast && "text-muted-foreground",
         !(isActive || isPast) && "text-muted-foreground/60",
         onSeek && "cursor-pointer hover:text-foreground",
-        !onSeek && "cursor-default",
+        !onSeek && "cursor-pointer",
         className
       )}
       data-active={isActive}

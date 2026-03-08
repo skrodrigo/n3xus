@@ -1,12 +1,12 @@
-# Pumkin
+# NyxAI
 
-![Dashboard Screenshot](./web/public/pumkin.png)
+![Dashboard Screenshot](./web/public/nyxai.png)
 
-> **Pumkin** - An integrated chat platform with multiple AI models, where users can switch between models, create new chats, organize conversations, and compare responses.
+> **NyxAI** - An integrated chat platform with multiple AI models, where users can switch between models, create new chats, organize conversations, and compare responses.
 
 ## Overview
 
-Pumkin is a complete SaaS application built as a monorepo. The **web app** is built with **Next.js (App Router)** and talks to a dedicated **Hono API** backend. Authentication is handled with **Google OAuth** and **JWT**, with a **BFF layer** (Next.js Route Handlers) that stores the JWT in an **httpOnly cookie** and proxies authenticated requests to the API.
+NyxAI is a complete SaaS application built as a monorepo. The **web app** is built with **Next.js (App Router)** and talks to a dedicated **Hono API** backend. Authentication is handled with **Google OAuth** and **JWT**, with a **BFF layer** (Next.js Route Handlers) that stores the JWT in an **httpOnly cookie** and proxies authenticated requests to the API.
 
 This repo contains 3 apps:
 
@@ -44,7 +44,7 @@ This repo contains 3 apps:
 ### Project Structure
 
 ```
-pumkin/
+nyxai/
 ├── backend/                      # Hono.js API (Drizzle ORM)
 │   ├── api/                      # Entry point
 │   ├── src/

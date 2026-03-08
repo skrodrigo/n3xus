@@ -86,7 +86,7 @@ export function SubscriptionCanceledEmail(props: SubscriptionCanceledEmailProps)
           <Hr className="my-[32px]" style={{ borderColor: '#E5E7EB' }} />
           <Section>
             <Text className="text-[12px] m-0 text-center leading-[18px]" style={{ color: '#687385' }}>
-              © {new Date().getFullYear()} Pumkin. Todos os direitos reservados.
+              © {new Date().getFullYear()} NyxAI. Todos os direitos reservados.
             </Text>
           </Section>
         </Container>

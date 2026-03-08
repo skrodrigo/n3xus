@@ -785,27 +785,20 @@ export function Chat({
                 onValueChange={applySelectedModel}
                 value={modelTab === 'text' ? model : imageModel}
               >
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <PromptInputModelSelectTrigger>
-                        {modelTab === 'text' && selectedModel && (
-                          <div className="flex items-center gap-2">
-                            {selectedModel.icon}
-                            <span className="font-medium">{selectedModel.name}</span>
-                          </div>
-                        )}
-                        {modelTab === 'image' && selectedImageModel && (
-                          <div className="flex items-center gap-2">
-                            {selectedImageModel.icon}
-                            <span className="font-medium">{selectedImageModel.name}</span>
-                          </div>
-                        )}
-                      </PromptInputModelSelectTrigger>
-                    </TooltipTrigger>
-                    <TooltipContent sideOffset={6}>{t('selectModel')}</TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
+                <PromptInputModelSelectTrigger>
+                  {modelTab === 'text' && selectedModel && (
+                    <div className="flex items-center gap-2">
+                      {selectedModel.icon}
+                      <span className="font-medium">{selectedModel.name}</span>
+                    </div>
+                  )}
+                  {modelTab === 'image' && selectedImageModel && (
+                    <div className="flex items-center gap-2">
+                      {selectedImageModel.icon}
+                      <span className="font-medium">{selectedImageModel.name}</span>
+                    </div>
+                  )}
+                </PromptInputModelSelectTrigger>
                 <PromptInputModelSelectContent>
                   <div className='pb-2'>
                     <Tabs value={modelTab} onValueChange={(v) => setModelTab(v as 'text' | 'image')}>

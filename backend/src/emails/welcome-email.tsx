@@ -42,7 +42,7 @@ export function WelcomeEmail(props: WelcomeEmailProps) {
               Agora é a parte boa: <span style={{ color: '#ffad5b', fontWeight: 600 }}>entrar, perguntar e produzir</span>.
             </Text>
             <Text className="text-[16px] m-0 leading-[24px] text-black">
-              Dica: comece com um objetivo claro (ex.: "me ajude a planejar minha semana") e deixe o Pumkin quebrar em passos.
+              Dica: comece com um objetivo claro (ex.: "me ajude a planejar minha semana") e deixe o NyxAI quebrar em passos.
             </Text>
           </Section>
 
@@ -72,7 +72,7 @@ export function WelcomeEmail(props: WelcomeEmailProps) {
           <Hr className="my-[32px]" style={{ borderColor: '#E5E7EB' }} />
           <Section>
             <Text className="text-[12px] m-0 text-center leading-[18px]" style={{ color: '#687385' }}>
-              © {new Date().getFullYear()} Pumkin. Todos os direitos reservados.
+              © {new Date().getFullYear()} NyxAI Todos os direitos reservados.
             </Text>
           </Section>
         </Container>

@@ -1,6 +1,9 @@
 import * as React from "react"
-import { ArrowLeft01Icon, ArrowRight01Icon, MoreHorizontalIcon } from '@hugeicons/core-free-icons'
-import { Icon } from '@/components/ui/icon'
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  MoreHorizontalIcon,
+} from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { buttonVariants, type Button } from "@/components/ui/button"
@@ -73,7 +76,7 @@ function PaginationPrevious({
       className={cn("gap-1 px-2.5 sm:pl-2.5", className)}
       {...props}
     >
-      <Icon icon={ArrowLeft01Icon} />
+      <ChevronLeftIcon />
       <span className="hidden sm:block">Previous</span>
     </PaginationLink>
   )
@@ -91,7 +94,7 @@ function PaginationNext({
       {...props}
     >
       <span className="hidden sm:block">Next</span>
-      <Icon icon={ArrowRight01Icon} />
+      <ChevronRightIcon />
     </PaginationLink>
   )
 }
@@ -107,7 +110,7 @@ function PaginationEllipsis({
       className={cn("flex size-9 items-center justify-center", className)}
       {...props}
     >
-      <Icon icon={MoreHorizontalIcon} className="size-[18px]" />
+      <MoreHorizontalIcon className="size-4" />
       <span className="sr-only">More pages</span>
     </span>
   )

@@ -81,11 +81,11 @@ export default async function SharedChatPage({ params }: { params: Promise<{ id:
       </ScrollArea>
       <div className="fixed bottom-4 left-0 right-0 flex justify-center px-4">
         <div className='bg-accent mr-2 border-t border-b border-border/80 rounded-full w-12 h-12 flex items-center justify-center'>
-          <Image src="/logos/pumkin-icon.svg" alt="Logo" width={20} height={20} />
+          <Image src="/logos/nyxai-white.svg" alt="Logo" width={20} height={20} />
         </div>
         <Button asChild className='group' variant="default">
           <Link href="/chat">
-            <span>{t('continueToPumkin')}</span>
+            <span>{t('continueToNyxAI')}</span>
             <Icon icon={ArrowRight01Icon} className="group-hover:ml-3  size-[18px] transition-all" />
           </Link>
         </Button>

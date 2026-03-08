@@ -226,118 +226,125 @@ export function NavChatHistory({
       <SidebarGroup className="group-data-[collapsible=icon]:hidden">
         <SidebarGroupLabel>{t('chatHistory.chats')}</SidebarGroupLabel>
         <SidebarMenu>
-          {chats.map((chat) => (
-            <SidebarMenuItem key={chat.id} className="group/chat-item">
-              <SidebarMenuButton
-                asChild
-                isActive={pathname === `/${locale === 'pt' ? '' : locale + '/'}chat/${chat.id}`}
-                className="group-hover/chat-item:bg-sidebar-accent group-hover/chat-item:text-sidebar-accent-foreground"
-              >
-                <Link
-                  href={locale === 'pt' ? `/chat/${chat.id}` : `/${locale}/chat/${chat.id}`}
-                  onPointerDown={() => startLongPress(chat.id)}
-                  onPointerUp={cancelLongPress}
-                  onPointerCancel={cancelLongPress}
-                  onPointerLeave={cancelLongPress}
-                  onContextMenu={(e) => {
-                    if (!isMobile) return
-                    e.preventDefault()
-                  }}
-                  onClick={(e) => {
-                    if (!isMobile) return
-                    if (longPressTriggeredIdRef.current !== chat.id) return
-                    e.preventDefault()
-                    e.stopPropagation()
-                    longPressTriggeredIdRef.current = null
-                    cancelLongPress()
-                  }}
+          {chats
+            .slice()
+            .sort((a, b) => {
+              if (a.pinnedAt && !b.pinnedAt) return -1
+              if (!a.pinnedAt && b.pinnedAt) return 1
+              return 0
+            })
+            .map((chat) => (
+              <SidebarMenuItem key={chat.id} className="group/chat-item">
+                <SidebarMenuButton
+                  asChild
+                  isActive={pathname === `/${locale === 'pt' ? '' : locale + '/'}chat/${chat.id}`}
+                  className="group-hover/chat-item:bg-sidebar-accent group-hover/chat-item:text-sidebar-accent-foreground"
                 >
-                  <span className="truncate">{chat.title}</span>
-                </Link>
-              </SidebarMenuButton>
-              {chat.pinnedAt && openDropdownId !== chat.id && (
-                <SidebarMenuAction
-                  className="flex"
-                >
-                  <Icon icon={PinIcon} className="h-3.5 w-3.5 text-muted-foreground/20" fill='currentColor' />
-                </SidebarMenuAction>
-              )}
-              <DropdownMenu
-                open={openDropdownId === chat.id}
-                onOpenChange={(open) => setOpenDropdownId(open ? chat.id : null)}
-              >
-                {isMobile ? (
-                  <DropdownMenuTrigger asChild>
-                    <button
-                      aria-hidden
-                      tabIndex={-1}
-                      className="pointer-events-none absolute right-2 top-1/2 h-6 w-6 -translate-y-1/2 opacity-0"
-                    />
-                  </DropdownMenuTrigger>
-                ) : (
-                  <TooltipProvider>
-                    <Tooltip>
-                      <DropdownMenuTrigger asChild>
-                        <TooltipTrigger asChild>
-                          <SidebarMenuAction
-                            showOnHover
-                            className="group-hover/chat-item:bg-sidebar-accent group-hover/chat-item:text-sidebar-accent-foreground"
-                          >
-                            <Icon icon={MoreHorizontalIcon} className='cursor-pointer size-[18px]' />
-                          </SidebarMenuAction>
-                        </TooltipTrigger>
-                      </DropdownMenuTrigger>
-                      <TooltipContent side="bottom" sideOffset={6}>{t('chatHistory.moreOptions')}</TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
+                  <Link
+                    href={locale === 'pt' ? `/chat/${chat.id}` : `/${locale}/chat/${chat.id}`}
+                    onPointerDown={() => startLongPress(chat.id)}
+                    onPointerUp={cancelLongPress}
+                    onPointerCancel={cancelLongPress}
+                    onPointerLeave={cancelLongPress}
+                    onContextMenu={(e) => {
+                      if (!isMobile) return
+                      e.preventDefault()
+                    }}
+                    onClick={(e) => {
+                      if (!isMobile) return
+                      if (longPressTriggeredIdRef.current !== chat.id) return
+                      e.preventDefault()
+                      e.stopPropagation()
+                      longPressTriggeredIdRef.current = null
+                      cancelLongPress()
+                    }}
+                  >
+                    <span className="truncate">{chat.title}</span>
+                  </Link>
+                </SidebarMenuButton>
+                {chat.pinnedAt && openDropdownId !== chat.id && (
+                  <SidebarMenuAction
+                    className="flex"
+                  >
+                    <Icon icon={PinIcon} className="h-3.5 w-3.5 text-muted-foreground/20" fill='currentColor' />
+                  </SidebarMenuAction>
                 )}
-                <DropdownMenuContent
-                  className="w-48 rounded-md"
-                  side={isMobile ? "bottom" : "right"}
-                  align={isMobile ? "end" : "start"}
+                <DropdownMenu
+                  open={openDropdownId === chat.id}
+                  onOpenChange={(open) => setOpenDropdownId(open ? chat.id : null)}
                 >
-                  <DropdownMenuItem
-                    onClick={() => {
-                      if (chat.pinnedAt) {
-                        handleUnpin(chat.id)
-                        return
-                      }
-                      handlePin(chat.id)
-                    }}
-                    disabled={isPending || isLoading}
+                  {isMobile ? (
+                    <DropdownMenuTrigger asChild>
+                      <button
+                        aria-hidden
+                        tabIndex={-1}
+                        className="pointer-events-none absolute right-2 top-1/2 h-6 w-6 -translate-y-1/2 opacity-0"
+                      />
+                    </DropdownMenuTrigger>
+                  ) : (
+                    <TooltipProvider>
+                      <Tooltip>
+                        <DropdownMenuTrigger asChild>
+                          <TooltipTrigger asChild>
+                            <SidebarMenuAction
+                              showOnHover
+                              className="group-hover/chat-item:bg-sidebar-accent group-hover/chat-item:text-sidebar-accent-foreground"
+                            >
+                              <Icon icon={MoreHorizontalIcon} className='cursor-pointer size-[18px]' />
+                            </SidebarMenuAction>
+                          </TooltipTrigger>
+                        </DropdownMenuTrigger>
+                        <TooltipContent side="bottom" sideOffset={6}>{t('chatHistory.moreOptions')}</TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  )}
+                  <DropdownMenuContent
+                    className="w-48 rounded-md"
+                    side={isMobile ? "bottom" : "right"}
+                    align={isMobile ? "end" : "start"}
                   >
-                    <Icon icon={chat.pinnedAt ? PinOffIcon : PinIcon} className="text-muted-foreground" />
-                    <span>{chat.pinnedAt ? t('chatHistory.unpin') : t('chatHistory.pin')}</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleOpenRename(chat.id, chat.title)} disabled={isPending || isLoading}>
-                    <Icon icon={Edit03Icon} className="text-muted-foreground" />
-                    <span>{t('chatHistory.rename')}</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => handleShareClick(chat.id)} disabled={isPending}>
-                    <Icon icon={Share03Icon} className="text-muted-foreground" />
-                    <span>{t('chatHistory.share')}</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleArchive(chat.id)} disabled={isPending}>
-                    <Icon icon={Archive03Icon} className="text-muted-foreground" />
-                    <span>{t('chatHistory.archive')}</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem
-                    className='focus:bg-destructive/20'
-                    onClick={() => {
-                      setChatIdToDelete(chat.id)
-                      setDeleteDialogOpen(true)
-                    }}
-                    disabled={isPending}
-                  >
-                    <Icon icon={Delete02Icon} className="text-muted-foreground" />
-                    <span>{t('chatHistory.delete')}</span>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </SidebarMenuItem>
-          ))}
+                    <DropdownMenuItem
+                      onClick={() => {
+                        if (chat.pinnedAt) {
+                          handleUnpin(chat.id)
+                          return
+                        }
+                        handlePin(chat.id)
+                      }}
+                      disabled={isPending || isLoading}
+                    >
+                      <Icon icon={chat.pinnedAt ? PinOffIcon : PinIcon} className="text-muted-foreground" />
+                      <span>{chat.pinnedAt ? t('chatHistory.unpin') : t('chatHistory.pin')}</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleOpenRename(chat.id, chat.title)} disabled={isPending || isLoading}>
+                      <Icon icon={Edit03Icon} className="text-muted-foreground" />
+                      <span>{t('chatHistory.rename')}</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={() => handleShareClick(chat.id)} disabled={isPending}>
+                      <Icon icon={Share03Icon} className="text-muted-foreground" />
+                      <span>{t('chatHistory.share')}</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleArchive(chat.id)} disabled={isPending}>
+                      <Icon icon={Archive03Icon} className="text-muted-foreground" />
+                      <span>{t('chatHistory.archive')}</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      className='focus:bg-destructive/20'
+                      onClick={() => {
+                        setChatIdToDelete(chat.id)
+                        setDeleteDialogOpen(true)
+                      }}
+                      disabled={isPending}
+                    >
+                      <Icon icon={Delete02Icon} className="text-muted-foreground" />
+                      <span>{t('chatHistory.delete')}</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </SidebarMenuItem>
+            ))}
         </SidebarMenu>
       </SidebarGroup>
 

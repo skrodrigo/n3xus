@@ -1,6 +1,6 @@
 {
-  "name": "Pumkin",
-  "short_name": "Pumkin",
+  "name": "Nyx",
+  "short_name": "Nyx",
   "icons": [
     {
       "src": "/web-app-manifest-192x192.png",
@@ -15,7 +15,7 @@
       "purpose": "maskable"
     }
   ],
-  "theme_color": "#1C1C1C",
-  "background_color": "#1C1C1C",
+  "theme_color": "#ffffff",
+  "background_color": "#ffffff",
   "display": "standalone"
 }

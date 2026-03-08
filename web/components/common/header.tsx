@@ -14,7 +14,7 @@ export function Header({ onSignInClick, onSignUpClick }: HeaderProps) {
   return (
     <header className="w-full max-w-3xl mx-auto flex items-center justify-between p-1 bg-background">
       <div className="flex items-center gap-2 px-4">
-        <Image src="/logos/pumkin-icon.svg" alt="Pumkin Logo" width={24} height={24} />
+        <Image src="/logos/nyxai-white.svg" alt="NyxAI Logo" width={24} height={24} />
       </div>
       <div className="flex gap-2">
         <Button variant="ghost" className='h-10' onClick={onSignUpClick}>

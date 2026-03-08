@@ -70,19 +70,19 @@ export default function AppSidebar({ chats: initialChats, ...props }: AppSidebar
           <SidebarHeader >
             <div className="flex items-center gap-2 justify-between w-full">
               <Image
-                src="/logos/pumkin-black.svg"
+                src="/logos/nyxai-black.svg"
                 alt="Logo"
-                width={100}
-                height={100}
+                width={32}
+                height={32}
                 priority
                 quality={100}
                 className="m-2 dark:hidden"
               />
               <Image
-                src="/logos/pumkin-white.svg"
+                src="/logos/nyxai-white.svg"
                 alt="Logo"
-                width={100}
-                height={100}
+                width={32}
+                height={32}
                 priority
                 quality={100}
                 className="m-2 hidden dark:block"

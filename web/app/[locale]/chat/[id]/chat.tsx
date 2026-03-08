@@ -797,126 +797,123 @@ export function Chat({
     <div className="flex h-screen w-full overflow-hidden p-2 md:p-0">
       {isMobile ? (
         <>
-          <div className="relative flex flex-col h-full w-full overflow-x-hidden ">
-            <div className="absolute top-0 left-0 right-0 py-1 flex items-center gap-2 z-20 bg-background">
-              <SidebarTrigger />
-              <PromptInputModelSelect
-                onValueChange={applySelectedModel}
-                value={modelTab === 'text' ? model : imageModel}
-              >
-                <PromptInputModelSelectTrigger>
-                  {modelTab === 'text' && selectedModel && (
-                    <div className="flex items-center gap-2">
-                      {selectedModel.icon}
-                      <span className="font-medium">{selectedModel.name}</span>
+          <div className="relative flex flex-col h-full w-full overflow-hidden">
+            <div className="absolute top-0 left-0 right-0 py-1 flex items-center justify-between gap-2 z-20 bg-background">
+              <div className='flex items-center justify-center gap-2'>
+                <SidebarTrigger />
+                <PromptInputModelSelect
+                  onValueChange={applySelectedModel}
+                  value={modelTab === 'text' ? model : imageModel}
+                >
+                  <PromptInputModelSelectTrigger>
+                    {modelTab === 'text' && selectedModel && (
+                      <div className="flex items-center gap-2">
+                        {selectedModel.icon}
+                        <span className="font-medium">{selectedModel.name}</span>
+                      </div>
+                    )}
+                    {modelTab === 'image' && selectedImageModel && (
+                      <div className="flex items-center gap-2">
+                        {selectedImageModel.icon}
+                        <span className="font-medium">{selectedImageModel.name}</span>
+                      </div>
+                    )}
+                  </PromptInputModelSelectTrigger>
+                  <PromptInputModelSelectContent>
+                    <div className='pb-2'>
+                      <Tabs value={modelTab} onValueChange={(v) => setModelTab(v as 'text' | 'image')}>
+                        <TabsList className="w-full">
+                          <TabsTrigger className="flex-1" value="text">
+                            Texto
+                          </TabsTrigger>
+                          <TabsTrigger className="flex-1" value="image">
+                            Imagem
+                          </TabsTrigger>
+                        </TabsList>
+                      </Tabs>
                     </div>
-                  )}
-                  {modelTab === 'image' && selectedImageModel && (
-                    <div className="flex items-center gap-2">
-                      {selectedImageModel.icon}
-                      <span className="font-medium">{selectedImageModel.name}</span>
-                    </div>
-                  )}
-                </PromptInputModelSelectTrigger>
-                <PromptInputModelSelectContent>
-                  <div className='pb-2'>
-                    <Tabs value={modelTab} onValueChange={(v) => setModelTab(v as 'text' | 'image')}>
-                      <TabsList className="w-full">
-                        <TabsTrigger className="flex-1" value="text">
-                          Texto
-                        </TabsTrigger>
-                        <TabsTrigger className="flex-1" value="image">
-                          Imagem
-                        </TabsTrigger>
-                      </TabsList>
-                    </Tabs>
-                  </div>
-                  {(modelTab === 'text' ? models : imageModels).map((m) => {
-                    const Icon = m.icon
-                    return (
-                      <PromptInputModelSelectItem
-                        key={m.value}
-                        value={m.value}
-                        disabled={(m as { off?: boolean }).off}
-                      >
-                        <div className="flex items-center gap-2">
-                          {Icon}
-                          <span className="font-medium">{m.name}</span>
-                          {(m as { off?: boolean }).off && (
-                            <span className="text-xs text-amber-500">
-                              {t('comingSoon')}
-                            </span>
-                          )}
-                        </div>
-                      </PromptInputModelSelectItem>
-                    )
-                  })}
-                </PromptInputModelSelectContent>
-              </PromptInputModelSelect>
+                    {(modelTab === 'text' ? models : imageModels).map((m) => {
+                      const Icon = m.icon
+                      return (
+                        <PromptInputModelSelectItem
+                          key={m.value}
+                          value={m.value}
+                          disabled={(m as { off?: boolean }).off}
+                        >
+                          <div className="flex items-center gap-2">
+                            {Icon}
+                            <span className="font-medium">{m.name}</span>
+                            {(m as { off?: boolean }).off && (
+                              <span className="text-xs text-amber-500">
+                                {t('comingSoon')}
+                              </span>
+                            )}
+                          </div>
+                        </PromptInputModelSelectItem>
+                      )
+                    })}
+                  </PromptInputModelSelectContent>
+                </PromptInputModelSelect>
+              </div>
               {effectiveChatId && (
-                <>
-                  <div className="flex-1 text-center px-4">
-                    <span className="font-medium text-sm text-muted-foreground/60 truncate block max-w-[200px] md:max-w-[400px] mx-auto">{title || initialTitle || 'New chat'}</span>
-                  </div>
-                  <div className="flex items-center gap-2 shrink-0">
+                <div className="flex items-center gap-2">
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button type="button" onClick={handleShare}
+                          disabled={isPending || isStreaming}
+                          className="p-1">
+                          <Icon icon={Share03Icon} className="size-5" />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent side="bottom" sideOffset={6}>
+                        {t('share')}
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                  <DropdownMenu>
                     <TooltipProvider>
                       <Tooltip>
-                        <TooltipTrigger asChild>
-                          <button type="button" onClick={handleShare}
-                            disabled={isPending || isStreaming}
-                            className="p-1">
-                            <Icon icon={Share03Icon} className="size-5" />
-                          </button>
-                        </TooltipTrigger>
-                        <TooltipContent side="bottom" sideOffset={6}>
-                          {t('share')}
-                        </TooltipContent>
+                        <DropdownMenuTrigger asChild>
+                          <TooltipTrigger asChild>
+                            <button type="button" disabled={isStreaming}
+                              className="p-1">
+                              <Icon icon={MoreHorizontalIcon} className="size-6" />
+                            </button>
+                          </TooltipTrigger>
+                        </DropdownMenuTrigger>
+                        <TooltipContent side="bottom" sideOffset={6}>{t('moreOptions')}</TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
-                    <DropdownMenu>
-                      <TooltipProvider>
-                        <Tooltip>
-                          <DropdownMenuTrigger asChild>
-                            <TooltipTrigger asChild>
-                              <button type="button" disabled={isStreaming}
-                                className="p-1">
-                                <Icon icon={MoreHorizontalIcon} className="size-6" />
-                              </button>
-                            </TooltipTrigger>
-                          </DropdownMenuTrigger>
-                          <TooltipContent side="bottom" sideOffset={6}>{t('moreOptions')}</TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={handleTogglePin} disabled={isPending || isLoading || isStreaming}>
-                          <Icon
-                            icon={isPinned ? PinOffIcon : PinIcon}
-                            className="text-muted-foreground mr-2 size-[18px]"
-                          />
-                          <span>{isPinned ? t('unpin') : t('pin')}</span>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={handleOpenRename} disabled={isPending || isLoading || isStreaming}>
-                          <Icon icon={Edit03Icon} className="text-muted-foreground mr-2 size-[18px]" />
-                          <span>{t('rename')}</span>
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={handleArchive} disabled={isPending || isStreaming}>
-                          <Icon icon={Archive03Icon} className="text-muted-foreground mr-2 size-[18px]" />
-                          <span>{t('archive')}</span>
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem
-                          className="focus:bg-destructive/20"
-                          onClick={() => setDeleteDialogOpen(true)}
-                          disabled={isPending || isStreaming}
-                        >
-                          <Icon icon={Delete02Icon} className="text-muted-foreground mr-2 size-[18px]" />
-                          <span>{t('delete')}</span>
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </div>
-                </>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem onClick={handleTogglePin} disabled={isPending || isLoading || isStreaming}>
+                        <Icon
+                          icon={isPinned ? PinOffIcon : PinIcon}
+                          className="text-muted-foreground mr-2 size-[18px]"
+                        />
+                        <span>{isPinned ? t('unpin') : t('pin')}</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={handleOpenRename} disabled={isPending || isLoading || isStreaming}>
+                        <Icon icon={Edit03Icon} className="text-muted-foreground mr-2 size-[18px]" />
+                        <span>{t('rename')}</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onClick={handleArchive} disabled={isPending || isStreaming}>
+                        <Icon icon={Archive03Icon} className="text-muted-foreground mr-2 size-[18px]" />
+                        <span>{t('archive')}</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        className="focus:bg-destructive/20"
+                        onClick={() => setDeleteDialogOpen(true)}
+                        disabled={isPending || isStreaming}
+                      >
+                        <Icon icon={Delete02Icon} className="text-muted-foreground mr-2 size-[18px]" />
+                        <span>{t('delete')}</span>
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
               )}
               {!effectiveChatId && (
                 <div className="ml-auto flex items-center gap-2">
@@ -964,7 +961,7 @@ export function Chat({
                 </div>
               )}
             </div>
-            <SidebarInset className="flex-1 overflow-hidden min-h-0">
+            <SidebarInset className="flex-1 overflow-y-auto min-h-0 scrollbar-hidden" style={{ WebkitOverflowScrolling: 'touch' }}>
               {isNewChat ? (
                 <div className="flex flex-col items-center justify-center h-full px-4">
                   <div className="w-full max-w-3xl">
@@ -1146,7 +1143,7 @@ export function Chat({
         <ResizablePanelGroup orientation="horizontal" className="h-full w-full">
           <ResizablePanel defaultSize={isPanelOpen ? 60 : 100} id="chat-panel">
             <div className="relative flex flex-col h-full w-full overflow-x-hidden">
-              <div className="absolute top-0 left-0 right-0 py-1 flex items-center gap-2 z-20 bg-background px-2">
+              <div className="absolute top-0 left-0 right-0 py-1 flex items-center justify-between gap-2 z-20 bg-background px-2">
                 {sidebarState === 'collapsed' ? <SidebarTrigger /> : null}
                 <PromptInputModelSelect
                   onValueChange={applySelectedModel}
@@ -1323,7 +1320,7 @@ export function Chat({
                   </div>
                 )}
               </div>
-              <SidebarInset className="flex-1 overflow-hidden min-h-0">
+              <SidebarInset className="flex-1 overflow-y-auto min-h-0 scrollbar-hidden" style={{ WebkitOverflowScrolling: 'touch' }}>
                 {isNewChat ? (
                   <div className="flex flex-col items-center justify-center h-full px-4">
                     <div className="w-full max-w-3xl">

@@ -3,7 +3,6 @@ import Link from 'next/link';
 import { Conversation, ConversationContent } from '@/components/ai-elements/conversation';
 import { Message, MessageContent } from '@/components/ai-elements/message';
 import { Response } from '@/components/ai-elements/response';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
 import { ArrowRight01Icon } from '@hugeicons/core-free-icons';
 import { Icon } from '@/components/ui/icon';
@@ -56,8 +55,8 @@ export default async function SharedChatPage({ params }: { params: Promise<{ id:
 
   return (
     <div className="relative flex flex-col h-screen w-full p-4">
-      <ScrollArea className="grow overflow-y-auto h-full rounded-md">
-        <Conversation className="grow overflow-y-auto w-full max-w-3xl mx-auto h-full">
+      <div className="grow overflow-y-auto h-full rounded-md scrollbar-hidden">
+        <Conversation className="grow w-full max-w-3xl mx-auto h-full">
           <ConversationContent>
             {messages.map((message: any) => {
               const role = message?.role;
@@ -78,7 +77,7 @@ export default async function SharedChatPage({ params }: { params: Promise<{ id:
             })}
           </ConversationContent>
         </Conversation>
-      </ScrollArea>
+      </div>
       <div className="fixed bottom-4 left-0 right-0 flex justify-center px-4">
         <div className='bg-accent mr-2 border-t border-b border-border/80 rounded-full w-12 h-12 flex items-center justify-center'>
           <Image src="/logos/nyxai-white.svg" alt="Logo" width={20} height={20} />

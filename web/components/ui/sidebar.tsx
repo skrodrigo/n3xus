@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
-import { SidebarLeftIcon } from "@hugeicons/core-free-icons"
+import { PanelLeftIcon } from "@hugeicons/core-free-icons"
 import { Slot } from "radix-ui"
 
 import { useIsMobile } from "@/hooks/use-mobile"
@@ -262,11 +262,9 @@ function SidebarTrigger({
   const { toggleSidebar } = useSidebar()
 
   return (
-    <Button
+    <button
       data-sidebar="trigger"
       data-slot="sidebar-trigger"
-      variant="ghost"
-      size="icon"
       className={cn("size-7", className)}
       onClick={(event) => {
         onClick?.(event)
@@ -274,9 +272,8 @@ function SidebarTrigger({
       }}
       {...props}
     >
-      <Icon icon={SidebarLeftIcon} />
-      <span className="sr-only">Toggle Sidebar</span>
-    </Button>
+      <Icon icon={PanelLeftIcon} className='size-6 md:size-4 cursor-pointer hover:opacity-90' />
+    </button>
   )
 }
 
